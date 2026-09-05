@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /backup/
+Disallow: /analyst
+Disallow: /vault
+Disallow: /api/shadow/
+Disallow: /api/config

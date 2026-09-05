@@ -1,69 +1,50 @@
-import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { currentSession } from "@/lib/portal";
 
-export default function Home() {
+export default async function Home() {
+  const session = await currentSession();
+  if (session) redirect("/dashboard");
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="flex min-h-screen flex-col bg-slate-900 text-white">
+      <header className="flex items-center justify-between px-8 py-5">
+        <p className="font-bold tracking-wide">ACME CORPORATION</p>
+        <Link
+          href="/login"
+          className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-200"
+        >
+          Employee Login
+        </Link>
+      </header>
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-6 text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+          Company Portal
+        </p>
+        <h1 className="mt-4 text-4xl font-bold leading-tight md:text-5xl">
+          One place for everything at Acme.
+        </h1>
+        <p className="mt-4 max-w-2xl text-slate-300">
+          Dashboards, employee directory, documents, reports, support tickets
+          and compliance resources — for Madrid, Austin and remote teams.
+        </p>
+        <Link
+          href="/login"
+          className="mt-8 rounded-md bg-sky-600 px-6 py-3 font-semibold text-white hover:bg-sky-500"
+        >
+          Sign in with your employee account
+        </Link>
+        <p className="mt-4 text-xs text-slate-500">
+          Internal system. Authorized personnel only. New hire?{" "}
+          <Link href="/onboarding" className="underline hover:text-slate-300">
+            Start with the onboarding guide
+          </Link>
+          .
+        </p>
       </main>
+      <footer className="px-8 py-4 text-center text-xs text-slate-500">
+        © 2026 Acme Corporation · Madrid · Austin · Lisbon
+      </footer>
     </div>
   );
 }
