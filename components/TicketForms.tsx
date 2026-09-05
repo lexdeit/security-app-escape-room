@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Label, TextArea, TextField } from "@heroui/react";
+import { AreaField, Field, PrimaryButton, SecondaryButton } from "@/components/ui";
 
 export function CommentForm({ ticketId }: { ticketId: number }) {
   const [body, setBody] = useState("");
@@ -33,23 +33,20 @@ export function CommentForm({ ticketId }: { ticketId: number }) {
 
   return (
     <form onSubmit={submit} className="mt-3 space-y-2">
-      <TextField fullWidth>
-        <Label className="sr-only">Reply</Label>
-        <TextArea
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          rows={3}
-          placeholder="Write a reply… (rich text allowed)"
-        />
-      </TextField>
-      {message ? <p className="text-sm text-slate-600">{message}</p> : null}
-      <Button
+      <AreaField
+        label="Reply"
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        rows={3}
+        placeholder="Write a reply… (rich text allowed)"
+      />
+      {message ? <p className="text-sm text-[#27251F]">{message}</p> : null}
+      <PrimaryButton
         type="submit"
-        variant="primary"
         isDisabled={busy || !body.trim()}
       >
         {busy ? "Posting…" : "Post reply"}
-      </Button>
+      </PrimaryButton>
     </form>
   );
 }
@@ -85,31 +82,26 @@ export function NewTicketForm() {
 
   return (
     <form onSubmit={submit} className="space-y-3">
-      <TextField fullWidth>
-        <Label className="sr-only">Summary</Label>
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Short summary"
-        />
-      </TextField>
-      <TextField fullWidth>
-        <Label className="sr-only">Description</Label>
-        <TextArea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={3}
-          placeholder="Describe the issue…"
-        />
-      </TextField>
-      {message ? <p className="text-sm text-slate-600">{message}</p> : null}
-      <Button
+      <Field
+        label="Summary"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Short summary"
+      />
+      <AreaField
+        label="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        rows={3}
+        placeholder="Describe the issue…"
+      />
+      {message ? <p className="text-sm text-[#27251F]">{message}</p> : null}
+      <SecondaryButton
         type="submit"
-        variant="secondary"
         isDisabled={busy || !title.trim() || !description.trim()}
       >
         {busy ? "Creating…" : "Create ticket"}
-      </Button>
+      </SecondaryButton>
     </form>
   );
 }

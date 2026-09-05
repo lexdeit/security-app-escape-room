@@ -1,6 +1,7 @@
-import { headers } from "next/headers";
+﻿import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AppShell, Card, Denied } from "@/components/AppShell";
+import { MonoBox, PageHeader } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
 import { ssoSessionFromHeaders } from "@/lib/auth";
 import { TICKETS } from "@/lib/data";
@@ -36,7 +37,7 @@ export default async function AnalystPage() {
     if (!session) redirect("/login");
     return (
       <AppShell user={session} active="/analyst">
-        <h1 className="mb-5 text-2xl font-bold">Analytics workspace</h1>
+        <PageHeader title="Analytics workspace" />
         <Denied what="This workspace is reserved for Security Operations analysts." />
       </AppShell>
     );
@@ -55,10 +56,7 @@ export default async function AnalystPage() {
 
   return (
     <AppShell user={shellUser} active="/analyst">
-      <h1 className="mb-1 text-2xl font-bold">Analytics workspace</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        Security Operations · triage queue and custodian records.
-      </p>
+      <PageHeader title="Analytics workspace" subtitle="Security Operations · triage queue and custodian records." />
       <div className="grid gap-4 md:grid-cols-2">
         <Card title="Triage queue">
           <ul className="space-y-3 text-sm">
@@ -82,9 +80,7 @@ export default async function AnalystPage() {
               Operations. Present this fragment together with custodian-1 and
               the service token at the compliance vault.
             </p>
-            <p className="mt-3 rounded bg-slate-900 px-3 py-2 font-mono text-sm text-green-300">
-              custodian-2: {VAULT_PART_2}
-            </p>
+            <MonoBox>custodian-2: {VAULT_PART_2}</MonoBox>
           </Card>
           <Card title="Phishing verification">
             <p className="text-sm text-slate-600">

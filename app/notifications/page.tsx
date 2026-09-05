@@ -1,6 +1,7 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
 import { NOTIFICATIONS } from "@/lib/data";
 
@@ -10,8 +11,7 @@ export default async function NotificationsPage() {
 
   return (
     <AppShell user={session} active="/notifications">
-      <h1 className="mb-1 text-2xl font-bold">Notifications</h1>
-      <p className="mb-5 text-sm text-slate-500">Latest updates for you.</p>
+      <PageHeader title="Notifications" subtitle="Latest updates for you." />
       <Card>
         <ul className="space-y-4">
           {NOTIFICATIONS.map((n) => (
@@ -29,7 +29,7 @@ export default async function NotificationsPage() {
                     <Link href="/backup" className="text-sky-700 hover:underline">
                       /backup
                     </Link>{" "}
-                    (index + env.backup) at 03:00. On-call: D. Ramírez.
+                    (index + env.backup) at 03:00. On-call: D. RamÃ­rez.
                   </>
                 ) : (
                   n.body

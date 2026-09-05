@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Label, TextField } from "@heroui/react";
+import { Field, MonoBox, SecondaryButton } from "@/components/ui";
 
 export function WebhookTester() {
   const [url, setUrl] = useState("");
@@ -33,22 +33,16 @@ export function WebhookTester() {
 
   return (
     <form onSubmit={submit} className="space-y-3">
-      <TextField fullWidth>
-        <Label className="sr-only">Webhook URL</Label>
-        <Input
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://your-system.example/hook"
-        />
-      </TextField>
-      <Button type="submit" variant="secondary" isDisabled={busy || !url}>
+      <Field
+        label="Webhook URL"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder="https://your-system.example/hook"
+      />
+      <SecondaryButton type="submit" isDisabled={busy || !url}>
         {busy ? "Sending test ping…" : "Send test ping"}
-      </Button>
-      {result !== null ? (
-        <pre className="max-h-64 overflow-auto whitespace-pre-wrap rounded bg-slate-900 p-3 text-xs text-slate-100">
-          {result}
-        </pre>
-      ) : null}
+      </SecondaryButton>
+      {result !== null ? <MonoBox>{result}</MonoBox> : null}
     </form>
   );
 }

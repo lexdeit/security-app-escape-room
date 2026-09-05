@@ -1,6 +1,12 @@
-import { redirect } from "next/navigation";
-import { Button, Chip, Input } from "@heroui/react";
+﻿import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import {
+  PageHeader,
+  PriorityChip,
+  SearchBar,
+  StatusChip,
+  TagChip,
+} from "@/components/ui";
 import { CommentForm, NewTicketForm } from "@/components/TicketForms";
 import { currentSession } from "@/lib/portal";
 import { getTicket, searchTickets } from "@/lib/data";
@@ -23,23 +29,15 @@ export default async function TicketsPage({
 
   return (
     <AppShell user={session} active="/tickets">
-      <h1 className="mb-1 text-2xl font-bold">Tickets</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        IT, facilities and compliance requests.
-      </p>
+      <PageHeader title="Tickets" subtitle="IT, facilities and compliance requests." />
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-4">
           <Card title="Search the queue">
-            <form method="GET" className="flex items-end gap-2">
-              <Input
-                name="q"
-                defaultValue={query}
-                placeholder="Try 'vpn', 'phishing', or an id…"
-              />
-              <Button type="submit" variant="secondary">
-                Go
-              </Button>
-            </form>
+            <SearchBar
+              defaultValue={query}
+              placeholder="Try 'vpn', 'phishing', or an id…"
+              buttonLabel="Go"
+            />
             <ul className="mt-3 space-y-2 text-sm">
               {visibleList.map((t) => (
                 <li key={t.id} className="border-b border-slate-100 pb-2 last:border-0">
@@ -47,23 +45,11 @@ export default async function TicketsPage({
                     #{t.id} {t.title}
                   </a>
                   <p className="mt-1 flex flex-wrap gap-1 text-xs text-slate-500">
-                    <Chip size="sm" variant="soft">
-                      {t.status}
-                    </Chip>
-                    <Chip
-                      size="sm"
-                      variant="soft"
-                      color={t.priority === "high" ? "danger" : "default"}
-                    >
-                      {t.priority}
-                    </Chip>
-                    <Chip size="sm" variant="soft">
-                      {t.tag}
-                    </Chip>
+                    <StatusChip status={t.status} />
+                    <PriorityChip priority={t.priority} />
+                    <TagChip>{t.tag}</TagChip>
                     {t.restricted ? (
-                      <Chip size="sm" variant="soft" color="warning">
-                        restricted
-                      </Chip>
+                      <TagChip color="warning">restricted</TagChip>
                     ) : null}
                   </p>
                 </li>
@@ -85,7 +71,7 @@ export default async function TicketsPage({
           ) : (
             <div className="text-sm">
               <p className="text-xs text-slate-500">
-                {opened.status} · {opened.priority} priority · {opened.tag} ·
+                {opened.status} Â· {opened.priority} priority Â· {opened.tag} Â·
                 opened by {opened.requester}
               </p>
               <p className="mt-2 text-slate-700">{opened.description}</p>
@@ -96,7 +82,7 @@ export default async function TicketsPage({
                 {opened.comments.map((c) => (
                   <li key={c.id} className="rounded bg-slate-50 px-3 py-2">
                     <p className="text-xs text-slate-500">
-                      {c.author} · {c.created}
+                      {c.author} Â· {c.created}
                     </p>
                     {/* Legacy rich-text replies render as HTML. */}
                     <div

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Label, TextArea, TextField } from "@heroui/react";
+import { AreaField, Field, PrimaryButton } from "@/components/ui";
 
 export function ProfileEditor({
   initial,
@@ -42,33 +42,32 @@ export function ProfileEditor({
   return (
     <form onSubmit={submit} className="space-y-3">
       <div className="grid gap-3 md:grid-cols-2">
-        <TextField fullWidth>
-          <Label>Full name</Label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
-        </TextField>
-        <TextField fullWidth>
-          <Label>Job title</Label>
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-        </TextField>
-      </div>
-      <TextField fullWidth>
-        <Label>Phone</Label>
-        <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
-      </TextField>
-      <TextField fullWidth>
-        <Label>
-          Bio <span className="font-normal text-slate-400">(rich text allowed)</span>
-        </Label>
-        <TextArea
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          rows={4}
+        <Field
+          label="Full name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
-      </TextField>
-      {message ? <p className="text-sm text-slate-600">{message}</p> : null}
-      <Button type="submit" variant="primary" isDisabled={busy}>
+        <Field
+          label="Job title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </div>
+      <Field
+        label="Phone"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+      />
+      <AreaField
+        label="Bio (rich text allowed)"
+        value={bio}
+        onChange={(e) => setBio(e.target.value)}
+        rows={4}
+      />
+      {message ? <p className="text-sm text-[#27251F]">{message}</p> : null}
+      <PrimaryButton type="submit" isDisabled={busy}>
         {busy ? "Saving…" : "Save changes"}
-      </Button>
+      </PrimaryButton>
     </form>
   );
 }

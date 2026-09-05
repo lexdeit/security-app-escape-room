@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { AppShell, Card, Denied } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { AccountsTable } from "@/components/AccountsTable";
 import { currentSession } from "@/lib/portal";
 import { PORTAL_USERS } from "@/lib/users";
@@ -11,7 +12,7 @@ export default async function AdminPage() {
   if (session.role !== "admin") {
     return (
       <AppShell user={session} active="/admin">
-        <h1 className="mb-5 text-2xl font-bold">Administration</h1>
+        <PageHeader title="Administration" />
         <Denied what="The administration console is restricted to IT administrators." />
       </AppShell>
     );
@@ -19,10 +20,7 @@ export default async function AdminPage() {
 
   return (
     <AppShell user={session} active="/admin">
-      <h1 className="mb-1 text-2xl font-bold">Administration</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        User accounts and portal roles.
-      </p>
+      <PageHeader title="Administration" subtitle="User accounts and portal roles." />
       <Card title="Accounts">
         <AccountsTable users={PORTAL_USERS} />
       </Card>

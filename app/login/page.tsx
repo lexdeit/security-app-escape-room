@@ -9,19 +9,18 @@ export default async function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
-      <Card className="w-full max-w-md p-2">
-        <Card.Header>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
-              Acme Corporation
-            </p>
-            <Card.Title className="text-2xl">Employee Login</Card.Title>
-            <Card.Description>
-              Sign in to access the company portal.
-            </Card.Description>
-          </div>
-        </Card.Header>
-        <Card.Content>
+      <Card className="w-full max-w-md overflow-hidden p-0">
+        <div className="h-2 bg-[#FFC72C]" />
+        <div className="bg-[#27251F] px-6 py-5">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#FFC72C]">
+            Acme Corporation
+          </p>
+          <p className="mt-1 text-2xl font-bold text-white">Employee Login</p>
+          <p className="mt-1 text-sm text-white/70">
+            Sign in to access the company portal.
+          </p>
+        </div>
+        <Card.Content className="p-6">
           <LoginForm />
         </Card.Content>
       </Card>

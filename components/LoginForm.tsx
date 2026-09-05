@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Alert, Button, Input, Label, TextField } from "@heroui/react";
+import { ErrorNote, Field, PrimaryButton } from "@/components/ui";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -35,37 +35,31 @@ export function LoginForm() {
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      <TextField fullWidth isRequired>
-        <Label>Corporate email</Label>
-        <Input
-          type="email"
-          autoComplete="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@acme-corp.com"
-        />
-      </TextField>
-      <TextField fullWidth isRequired>
-        <Label>Password</Label>
-        <Input
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-        />
-      </TextField>
-      {error ? (
-        <Alert status="danger">
-          <Alert.Description>{error}</Alert.Description>
-        </Alert>
-      ) : null}
-      <Button type="submit" variant="primary" fullWidth isDisabled={busy}>
+      <Field
+        label="Corporate email"
+        type="email"
+        isRequired
+        autoComplete="username"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="you@acme-corp.com"
+      />
+      <Field
+        label="Password"
+        type="password"
+        isRequired
+        autoComplete="current-password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="••••••••"
+      />
+      {error ? <ErrorNote>{error}</ErrorNote> : null}
+      <PrimaryButton type="submit" fullWidth isDisabled={busy}>
         {busy ? "Signing in…" : "Sign in"}
-      </Button>
-      <p className="text-center text-xs text-slate-500">
+      </PrimaryButton>
+      <p className="text-center text-xs text-[#6F665C]">
         New here? Read the{" "}
-        <Link href="/onboarding" className="text-sky-700 hover:underline">
+        <Link href="/onboarding" className="font-medium text-[#B5241A] hover:underline">
           onboarding guide
         </Link>{" "}
         for your starter account, or contact helpdesk@acme-corp.com.

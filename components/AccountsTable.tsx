@@ -1,6 +1,7 @@
 "use client";
 
-import { Chip, Table } from "@heroui/react";
+import { Table } from "@heroui/react";
+import { RoleChip } from "@/components/ui";
 import type { PortalUser } from "@/lib/users";
 
 export function AccountsTable({ users }: { users: PortalUser[] }) {
@@ -25,15 +26,9 @@ export function AccountsTable({ users }: { users: PortalUser[] }) {
               <Table.Cell>
                 <span className="text-slate-500">{u.department}</span>
               </Table.Cell>
-              <Table.Cell>
-                <Chip
-                  size="sm"
-                  variant="soft"
-                  color={u.role === "admin" ? "danger" : u.role === "analyst" ? "warning" : "default"}
-                >
-                  {u.role}
-                </Chip>
-              </Table.Cell>
+            <Table.Cell>
+              <RoleChip role={u.role} />
+            </Table.Cell>
             </Table.Row>
           )}
         </Table.Body>

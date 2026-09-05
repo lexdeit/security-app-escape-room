@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { WebhookTester } from "@/components/WebhookTester";
 import { currentSession } from "@/lib/portal";
 
@@ -9,10 +10,7 @@ export default async function SettingsPage() {
 
   return (
     <AppShell user={session} active="/settings">
-      <h1 className="mb-1 text-2xl font-bold">Settings</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        Workspace preferences and integrations.
-      </p>
+      <PageHeader title="Settings" subtitle="Workspace preferences and integrations." />
       <div className="grid gap-4 md:grid-cols-2">
         <Card title="Preferences">
           <ul className="space-y-3 text-sm text-slate-600">

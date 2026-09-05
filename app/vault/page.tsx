@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { VaultForm } from "@/components/VaultForm";
 import { currentSession } from "@/lib/portal";
 
@@ -13,10 +14,7 @@ export default async function VaultPage() {
 
   return (
     <AppShell user={session} active="/vault">
-      <h1 className="mb-1 text-2xl font-bold">Compliance Vault</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        Restricted memo disclosure · procedure VAULT-2026-04.
-      </p>
+      <PageHeader title="Compliance Vault" subtitle="Restricted memo disclosure Â· procedure VAULT-2026-04." />
       <div className="grid gap-4 md:grid-cols-2">
         <Card title="Two-custodian authorization">
           <p className="mb-4 text-sm text-slate-600">

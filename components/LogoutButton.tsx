@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@heroui/react";
+import { SecondaryButton } from "@/components/ui";
 
 export function LogoutButton() {
   const [busy, setBusy] = useState(false);
   return (
-    <Button
-      variant="secondary"
+    <SecondaryButton
       size="sm"
       fullWidth
       isDisabled={busy}
@@ -21,6 +20,6 @@ export function LogoutButton() {
       }}
     >
       {busy ? "Signing out…" : "Sign out"}
-    </Button>
+    </SecondaryButton>
   );
 }

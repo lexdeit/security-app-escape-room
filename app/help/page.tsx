@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
 
 export default async function HelpPage() {
@@ -8,15 +9,12 @@ export default async function HelpPage() {
 
   return (
     <AppShell user={session} active="/help">
-      <h1 className="mb-1 text-2xl font-bold">Help</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        Frequently asked questions about the portal.
-      </p>
+      <PageHeader title="Help" subtitle="Frequently asked questions about the portal." />
       <div className="space-y-4">
         <Card title="I forgot my password">
           <p className="text-sm text-slate-600">
             Contact helpdesk@acme-corp.com from your corporate mailbox. For
-            your first login, check the IT Onboarding Guide under Documents —
+            your first login, check the IT Onboarding Guide under Documents â€”
             it contains the starter account details.
           </p>
         </Card>

@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
 import { REPORTS } from "@/lib/data";
 
@@ -9,13 +10,10 @@ export default async function ReportsPage() {
 
   return (
     <AppShell user={session} active="/reports">
-      <h1 className="mb-1 text-2xl font-bold">Reports</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        Published performance reports.
-      </p>
+      <PageHeader title="Reports" subtitle="Published performance reports." />
       <div className="grid gap-4 md:grid-cols-2">
         {REPORTS.map((r) => (
-          <Card key={r.id} title={`${r.title} · ${r.period}`}>
+          <Card key={r.id} title={`${r.title} Â· ${r.period}`}>
             <p className="mb-3 text-xs text-slate-500">Owner: {r.owner}</p>
             <div className="space-y-2">
               {r.figures.map((f) => (

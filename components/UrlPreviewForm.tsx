@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Label, TextField } from "@heroui/react";
+import { Field, MonoBox, SecondaryButton } from "@/components/ui";
 
 export function UrlPreviewForm() {
   const [url, setUrl] = useState("");
@@ -34,33 +34,22 @@ export function UrlPreviewForm() {
 
   return (
     <form onSubmit={submit} className="space-y-3">
-      <TextField fullWidth>
-        <Label>Document URL</Label>
-        <Input
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://… or http://localhost:3000/api/…"
-        />
-      </TextField>
-      <TextField fullWidth>
-        <Label>
-          Service token{" "}
-          <span className="font-normal text-slate-400">(only for internal resources)</span>
-        </Label>
-        <Input
-          value={token}
-          onChange={(e) => setToken(e.target.value)}
-          placeholder="Optional"
-        />
-      </TextField>
-      <Button type="submit" variant="secondary" isDisabled={busy || !url}>
+      <Field
+        label="Document URL"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder="https://… or http://localhost:3000/api/…"
+      />
+      <Field
+        label="Service token (only for internal resources)"
+        value={token}
+        onChange={(e) => setToken(e.target.value)}
+        placeholder="Optional"
+      />
+      <SecondaryButton type="submit" isDisabled={busy || !url}>
         {busy ? "Fetching…" : "Fetch preview"}
-      </Button>
-      {result !== null ? (
-        <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-slate-900 p-3 text-xs text-slate-100">
-          {result}
-        </pre>
-      ) : null}
+      </SecondaryButton>
+      {result !== null ? <MonoBox>{result}</MonoBox> : null}
     </form>
   );
 }

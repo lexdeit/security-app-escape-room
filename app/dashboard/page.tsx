@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { DashboardWidgets } from "@/components/DashboardWidgets";
 import { currentSession } from "@/lib/portal";
 import { NOTIFICATIONS, TICKETS } from "@/lib/data";
@@ -14,12 +15,10 @@ export default async function DashboardPage() {
 
   return (
     <AppShell user={session} active="/dashboard">
-      <h1 className="mb-1 text-2xl font-bold">
-        Good day, {session.name.split(" ")[0]}.
-      </h1>
-      <p className="mb-5 text-sm text-slate-500">
-        Here is what is happening at Acme today.
-      </p>
+      <PageHeader
+        title={`Good day, ${session.name.split(" ")[0]}.`}
+        subtitle="Here is what is happening at Acme today."
+      />
 
       <DashboardWidgets />
 

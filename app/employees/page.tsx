@@ -1,7 +1,7 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Button, Input } from "@heroui/react";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader, SearchBar } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
 import { EMPLOYEES } from "@/lib/data";
 
@@ -26,21 +26,11 @@ export default async function EmployeesPage({
 
   return (
     <AppShell user={session} active="/employees">
-      <h1 className="mb-1 text-2xl font-bold">Employees</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        Directory of Acme Corporation staff.
-      </p>
-      <form method="GET" className="mb-4 flex items-end gap-2">
-        <Input
-          name="q"
-          defaultValue={q ?? ""}
-          placeholder="Search by name, title or department…"
-          className="w-full max-w-md"
-        />
-        <Button type="submit" variant="secondary">
-          Search
-        </Button>
-      </form>
+      <PageHeader title="Employees" subtitle="Directory of Acme Corporation staff." />
+      <SearchBar
+        defaultValue={q ?? ""}
+        placeholder="Search by name, title or department…"
+      />
       <Card>
         <ul className="divide-y divide-slate-100">
           {list.map((e) => (
@@ -53,7 +43,7 @@ export default async function EmployeesPage({
                   {e.name}
                 </Link>
                 <p className="text-sm text-slate-500">
-                  {e.title} · {e.department}
+                  {e.title} Â· {e.department}
                 </p>
               </div>
               <span className="text-xs text-slate-400">{e.office}</span>

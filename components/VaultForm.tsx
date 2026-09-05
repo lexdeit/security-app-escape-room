@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Alert, Button, Input, Label, TextField } from "@heroui/react";
+import { Alert } from "@heroui/react";
+import { ErrorNote, Field, MonoBox, PrimaryButton } from "@/components/ui";
 
 export function VaultForm() {
   const [part1, setPart1] = useState("");
@@ -38,44 +39,34 @@ export function VaultForm() {
   return (
     <div>
       <form onSubmit={submit} className="space-y-3">
-        <TextField fullWidth>
-          <Label>First custodian fragment</Label>
-          <Input
-            value={part1}
-            onChange={(e) => setPart1(e.target.value)}
-            placeholder="ACME-…-…"
-            className="font-mono"
-          />
-        </TextField>
-        <TextField fullWidth>
-          <Label>Second custodian fragment</Label>
-          <Input
-            value={part2}
-            onChange={(e) => setPart2(e.target.value)}
-            placeholder="ACME-…-…"
-            className="font-mono"
-          />
-        </TextField>
-        <TextField fullWidth>
-          <Label>Service token</Label>
-          <Input
-            value={serviceToken}
-            onChange={(e) => setServiceToken(e.target.value)}
-            placeholder="Internal service token"
-            className="font-mono"
-          />
-        </TextField>
-        <Button type="submit" variant="primary" isDisabled={busy}>
+        <Field
+          label="First custodian fragment"
+          value={part1}
+          onChange={(e) => setPart1(e.target.value)}
+          placeholder="ACME-…-…"
+          className="font-mono"
+        />
+        <Field
+          label="Second custodian fragment"
+          value={part2}
+          onChange={(e) => setPart2(e.target.value)}
+          placeholder="ACME-…-…"
+          className="font-mono"
+        />
+        <Field
+          label="Service token"
+          value={serviceToken}
+          onChange={(e) => setServiceToken(e.target.value)}
+          placeholder="Internal service token"
+          className="font-mono"
+        />
+        <PrimaryButton type="submit" isDisabled={busy}>
           {busy ? "Authorizing…" : "Request dual authorization"}
-        </Button>
+        </PrimaryButton>
       </form>
       {result && !result.ok ? (
         <div className="mt-4">
-          <Alert status="danger">
-            <Alert.Description>
-              {result.error || "Authorization failed."}
-            </Alert.Description>
-          </Alert>
+          <ErrorNote>{result.error || "Authorization failed."}</ErrorNote>
         </div>
       ) : null}
       {result?.ok ? (
@@ -83,11 +74,9 @@ export function VaultForm() {
           <Alert status="success">
             <Alert.Title>Disclosure authorized — memo released</Alert.Title>
             <Alert.Description>
-              <pre className="mt-2 whitespace-pre-wrap font-mono text-sm">
-                {result.memo}
-              </pre>
+              <MonoBox>{result.memo}</MonoBox>
               {result.reference ? (
-                <p className="mt-3 rounded bg-white px-3 py-2 font-mono text-sm font-bold text-slate-900">
+                <p className="mt-3 rounded bg-white px-3 py-2 font-mono text-sm font-bold text-[#27251F]">
                   {result.reference}
                 </p>
               ) : null}

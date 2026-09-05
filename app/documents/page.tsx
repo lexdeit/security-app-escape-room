@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { UrlPreviewForm } from "@/components/UrlPreviewForm";
 import { currentSession } from "@/lib/portal";
 import { DOCUMENTS } from "@/lib/data";
@@ -20,10 +21,7 @@ export default async function DocumentsPage({
 
   return (
     <AppShell user={session} active="/documents">
-      <h1 className="mb-1 text-2xl font-bold">Documents</h1>
-      <p className="mb-5 text-sm text-slate-500">
-        Company library. Some items have restricted circulation.
-      </p>
+      <PageHeader title="Documents" subtitle="Company library. Some items have restricted circulation." />
       <div className="grid gap-4 md:grid-cols-2">
         <Card title="Library">
           <ul className="space-y-3 text-sm">
@@ -33,7 +31,7 @@ export default async function DocumentsPage({
                   {d.title}
                 </a>
                 <p className="text-xs text-slate-500">
-                  {d.category} · updated {d.updated} · {d.size}
+                  {d.category} Â· updated {d.updated} Â· {d.size}
                 </p>
                 <p className="text-slate-600">{d.summary}</p>
               </li>

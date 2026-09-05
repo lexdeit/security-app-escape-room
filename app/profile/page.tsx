@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
+import { PageHeader } from "@/components/ui";
 import { ProfileEditor } from "@/components/ProfileEditor";
 import { currentSession } from "@/lib/portal";
 import { EMPLOYEES, getBio } from "@/lib/data";
@@ -30,9 +31,7 @@ export default async function ProfilePage({
 
   return (
     <AppShell user={session} active="/profile">
-      <h1 className="mb-5 text-2xl font-bold">
-        {isSelf ? "My Profile" : "Employee file"}
-      </h1>
+      <PageHeader title={isSelf ? "My Profile" : "Employee file"} />
       {!viewed ? (
         <Card title="Not found">
           <p className="text-sm text-slate-600">
