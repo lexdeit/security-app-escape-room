@@ -1,6 +1,14 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
-import { PageHeader } from "@/components/ui";
+import {
+  EmptyState,
+  IconArrow,
+  KV,
+  Muted,
+  PageHeader,
+  UserAvatar,
+} from "@/components/ui";
 import { ProfileEditor } from "@/components/ProfileEditor";
 import { currentSession } from "@/lib/portal";
 import { EMPLOYEES, getBio } from "@/lib/data";
@@ -31,61 +39,92 @@ export default async function ProfilePage({
 
   return (
     <AppShell user={session} active="/profile">
-      <PageHeader title={isSelf ? "My Profile" : "Employee file"} />
+      <PageHeader
+        eyebrow="People"
+        title={isSelf ? "My Profile" : "Employee file"}
+        subtitle={
+          isSelf
+            ? "Your directory presence — keep it fresh."
+            : "Shared by the directory backend."
+        }
+      />
       {!viewed ? (
         <Card title="Not found">
-          <p className="text-sm text-slate-600">
-            No employee file matches that id.
-          </p>
+          <EmptyState
+            title="No file matches that id"
+            hint="Check the employee list for a valid file."
+            action={
+              <Link
+                href="/employees"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#B5241A] hover:underline"
+              >
+                Browse employees <IconArrow className="h-4 w-4" />
+              </Link>
+            }
+          />
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card title={viewed.name}>
-            <dl className="space-y-2 text-sm">
-              <div><dt className="text-slate-500">Title</dt><dd className="font-medium">{viewed.title}</dd></div>
-              <div><dt className="text-slate-500">Department</dt><dd className="font-medium">{viewed.department}</dd></div>
-              <div><dt className="text-slate-500">Office</dt><dd className="font-medium">{viewed.office}</dd></div>
-              <div><dt className="text-slate-500">Email</dt><dd className="font-medium">{viewed.email}</dd></div>
-              <div><dt className="text-slate-500">Phone</dt><dd className="font-medium">{viewed.phone}</dd></div>
-              <div>
-                <dt className="text-slate-500">Bio</dt>
+        <div className="grid items-start gap-5 lg:grid-cols-5">
+          <div className="lg:col-span-3">
+            <Card>
+              <div className="flex items-center gap-4 border-b border-[#F3EBDD] pb-5">
+                <UserAvatar name={viewed.name} size="lg" />
+                <div className="min-w-0">
+                  <p className="font-display truncate text-2xl font-extrabold tracking-tight text-[#27251F]">
+                    {viewed.name}
+                  </p>
+                  <p className="mt-0.5 truncate text-sm text-[#6F665C]">
+                    {viewed.title} · {viewed.department}
+                  </p>
+                </div>
+              </div>
+              <dl className="grid grid-cols-1 gap-4 pt-5 sm:grid-cols-2">
+                <KV label="Office">{viewed.office}</KV>
+                <KV label="Email">{viewed.email}</KV>
+                <KV label="Phone">{viewed.phone}</KV>
+                <KV label="Directory note">{viewed.publicNote}</KV>
+              </dl>
+              <div className="mt-5">
+                <p className="mb-1.5 text-[13px] font-medium text-[#6F665C]">Bio</p>
                 {/* Legacy rich-text bios render as HTML. */}
-                <dd
-                  className="mt-1 rounded bg-slate-50 px-3 py-2"
+                <div
+                  className="rounded-xl bg-[#FFF9F0] px-4 py-3 text-[15px] leading-relaxed text-[#27251F] ring-1 ring-[#ECE2D0]"
                   dangerouslySetInnerHTML={{
                     __html: getBio(viewed.email, viewed.bio),
                   }}
                 />
               </div>
-              <div>
-                <dt className="text-slate-500">Directory note</dt>
-                <dd className="font-medium">{viewed.publicNote}</dd>
+              <div className="mt-4 rounded-xl border border-[#F0D489] bg-[#FFF8E1] px-4 py-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#8A6D00]">
+                  Internal HR note
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-[#27251F]">
+                  {viewed.internalNote}
+                </p>
               </div>
-              <div className="rounded border border-amber-200 bg-amber-50 px-3 py-2">
-                <dt className="text-xs font-semibold uppercase tracking-wide text-amber-700">Internal HR note</dt>
-                <dd className="mt-1 text-slate-700">{viewed.internalNote}</dd>
-              </div>
-            </dl>
-          </Card>
-          {isSelf ? (
-            <Card title="Edit profile">
-              <ProfileEditor
-                initial={{
-                  name: session.name,
-                  title: stored?.title ?? "",
-                  phone: viewed.phone,
-                  bio: getBio(viewed.email, viewed.bio),
-                }}
-              />
             </Card>
-          ) : (
-            <Card title="About this file">
-              <p className="text-sm text-slate-600">
-                This file is shared by the directory backend. Use the employee
-                list to browse other colleagues.
-              </p>
-            </Card>
-          )}
+          </div>
+          <div className="lg:col-span-2">
+            {isSelf ? (
+              <Card title="Edit profile">
+                <ProfileEditor
+                  initial={{
+                    name: session.name,
+                    title: stored?.title ?? "",
+                    phone: viewed.phone,
+                    bio: getBio(viewed.email, viewed.bio),
+                  }}
+                />
+              </Card>
+            ) : (
+              <Card title="About this file">
+                <Muted>
+                  This file is shared by the directory backend. Use the
+                  employee list to browse other colleagues.
+                </Muted>
+              </Card>
+            )}
+          </div>
         </div>
       )}
     </AppShell>

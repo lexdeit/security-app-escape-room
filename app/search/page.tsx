@@ -31,13 +31,13 @@ export default async function SearchPage({
 
   return (
     <AppShell user={session} active="/search">
-      <PageHeader title="Search" subtitle="Search employees, documents and tickets." />
+      <PageHeader eyebrow="Find" title="Search" subtitle="Search employees, documents and tickets." />
       <SearchBar defaultValue={query} placeholder="Type to search…" />
       {query ? (
         <div className="space-y-4">
           <Card>
             <h2 className="mb-2 text-sm font-semibold">
-              Results for â€œ{query}â€
+              Results for “{query}”
             </h2>
             {/* The query is reflected back into the page as-is (legacy behavior). */}
             <p
@@ -57,7 +57,7 @@ export default async function SearchPage({
                     <a href={`/profile?id=${e.id}`} className="text-sky-700 hover:underline">
                       {e.name}
                     </a>{" "}
-                    <span className="text-slate-500">Â· {e.title}</span>
+                    <span className="text-slate-500">· {e.title}</span>
                   </li>
                 ))}
               </ul>
@@ -73,7 +73,7 @@ export default async function SearchPage({
                     <a href={`/documents?id=${d.id}`} className="text-sky-700 hover:underline">
                       {d.title}
                     </a>{" "}
-                    <span className="text-slate-500">Â· {d.category}</span>
+                    <span className="text-slate-500">· {d.category}</span>
                   </li>
                 ))}
               </ul>
@@ -89,7 +89,7 @@ export default async function SearchPage({
                     <a href={`/tickets?id=${t.id}`} className="text-sky-700 hover:underline">
                       #{t.id} {t.title}
                     </a>{" "}
-                    <span className="text-slate-500">Â· {t.status}</span>
+                    <span className="text-slate-500">· {t.status}</span>
                   </li>
                 ))}
               </ul>

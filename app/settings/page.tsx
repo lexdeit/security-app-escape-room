@@ -1,8 +1,14 @@
 ﻿import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
-import { PageHeader } from "@/components/ui";
 import { WebhookTester } from "@/components/WebhookTester";
+import { IconBell, IconClock, IconGear, IconTicket, Muted, PageHeader } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
+
+const PREFS = [
+  { icon: IconBell, label: "Weekly digest email", value: "On", on: true },
+  { icon: IconTicket, label: "Ticket notifications", value: "On", on: true },
+  { icon: IconClock, label: "Time zone", value: "Europe/Madrid", on: true },
+];
 
 export default async function SettingsPage() {
   const session = await currentSession();
@@ -10,30 +16,49 @@ export default async function SettingsPage() {
 
   return (
     <AppShell user={session} active="/settings">
-      <PageHeader title="Settings" subtitle="Workspace preferences and integrations." />
-      <div className="grid gap-4 md:grid-cols-2">
+      <PageHeader
+        eyebrow="Workspace"
+        title="Settings"
+        subtitle="Workspace preferences and integrations."
+      />
+      <div className="grid items-start gap-5 lg:grid-cols-2">
         <Card title="Preferences">
-          <ul className="space-y-3 text-sm text-slate-600">
-            <li className="flex items-center justify-between">
-              Weekly digest email
-              <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">On</span>
-            </li>
-            <li className="flex items-center justify-between">
-              Ticket notifications
-              <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">On</span>
-            </li>
-            <li className="flex items-center justify-between">
-              Time zone
-              <span className="text-slate-800">Europe/Madrid</span>
-            </li>
+          <ul className="divide-y divide-[#F3EBDD]">
+            {PREFS.map((p) => (
+              <li key={p.label} className="flex items-center gap-3.5 py-3.5 first:pt-0 last:pb-0">
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5EFE3] text-[#6F665C]">
+                  <p.icon className="h-5 w-5" />
+                </span>
+                <span className="flex-1 text-[15px] font-medium text-[#27251F]">
+                  {p.label}
+                </span>
+                <span
+                  className={`rounded-full px-2.5 py-1 text-xs font-bold ${
+                    p.on
+                      ? "bg-[#E7F6EC] text-[#1E7A34]"
+                      : "bg-[#F5EFE3] text-[#6F665C]"
+                  }`}
+                >
+                  {p.value}
+                </span>
+              </li>
+            ))}
           </ul>
+          <div className="mt-4 flex items-center gap-3.5 rounded-xl bg-[#FFF9F0] px-3.5 py-3 ring-1 ring-[#F3EBDD]">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF3D6] text-[#B5241A]">
+              <IconGear className="h-5 w-5" />
+            </span>
+            <Muted>Changes apply to your workspace immediately.</Muted>
+          </div>
         </Card>
         <Card title="Outgoing webhook">
-          <p className="mb-3 text-sm text-slate-500">
+          <Muted>
             Forward portal events to an external system. Send a test ping to
             verify connectivity before saving.
-          </p>
-          <WebhookTester />
+          </Muted>
+          <div className="mt-4">
+            <WebhookTester />
+          </div>
         </Card>
       </div>
     </AppShell>

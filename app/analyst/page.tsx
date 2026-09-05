@@ -1,7 +1,7 @@
 ﻿import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AppShell, Card, Denied } from "@/components/AppShell";
-import { MonoBox, PageHeader } from "@/components/ui";
+import { MonoBox, Muted, PageHeader, PriorityChip, StatusChip, TagChip } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
 import { ssoSessionFromHeaders } from "@/lib/auth";
 import { TICKETS } from "@/lib/data";
@@ -37,7 +37,7 @@ export default async function AnalystPage() {
     if (!session) redirect("/login");
     return (
       <AppShell user={session} active="/analyst">
-        <PageHeader title="Analytics workspace" />
+        <PageHeader eyebrow="Security" title="Analytics workspace" />
         <Denied what="This workspace is reserved for Security Operations analysts." />
       </AppShell>
     );
@@ -56,38 +56,60 @@ export default async function AnalystPage() {
 
   return (
     <AppShell user={shellUser} active="/analyst">
-      <PageHeader title="Analytics workspace" subtitle="Security Operations · triage queue and custodian records." />
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card title="Triage queue">
-          <ul className="space-y-3 text-sm">
+      <PageHeader eyebrow="Security" title="Analytics workspace" subtitle="Security Operations · triage queue and custodian records." />
+      <div className="grid items-start gap-5 lg:grid-cols-2">
+        <Card title={`Triage queue · ${queue.length}`}>
+          <ul className="divide-y divide-[#F3EBDD]">
             {queue.map((t) => (
-              <li key={t.id} className="border-b border-slate-100 pb-2 last:border-0">
-                <a href={`/tickets?id=${t.id}`} className="font-medium text-sky-700 hover:underline">
+              <li key={t.id} className="py-3.5 first:pt-0 last:pb-0">
+                <a
+                  href={`/tickets?id=${t.id}`}
+                  className="text-[15px] font-semibold text-[#27251F] underline-offset-2 hover:text-[#B5241A] hover:underline"
+                >
                   #{t.id} {t.title}
                 </a>
-                <p className="text-xs text-slate-500">
-                  {t.status} · {t.priority} · {t.tag}
+                <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                  <StatusChip status={t.status} />
+                  <PriorityChip priority={t.priority} />
+                  <TagChip>{t.tag}</TagChip>
+                </span>
+                <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#6F665C]">
+                  {t.description}
                 </p>
-                <p className="mt-1 text-slate-600">{t.description}</p>
               </li>
             ))}
           </ul>
         </Card>
-        <div className="space-y-4">
-          <Card title="Custodian record — second fragment">
-            <p className="text-sm text-slate-600">
+        <div className="space-y-5">
+          <div className="dot-grid relative overflow-hidden rounded-2xl bg-[#27251F] p-6 text-white shadow-[0_12px_32px_-16px_rgba(39,37,31,0.6)]">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#FFC72C]/20 blur-2xl"
+            />
+            <p className="relative text-xs font-bold uppercase tracking-[0.18em] text-[#FFC72C]">
+              Custodian record — second fragment
+            </p>
+            <p className="relative mt-2 text-sm leading-relaxed text-white/70">
               Procedure VAULT-2026-04 · held by L. Fernández, Security
               Operations. Present this fragment together with custodian-1 and
               the service token at the compliance vault.
             </p>
-            <MonoBox>custodian-2: {VAULT_PART_2}</MonoBox>
-          </Card>
+            <div className="relative mt-4">
+              <MonoBox>custodian-2: {VAULT_PART_2}</MonoBox>
+            </div>
+          </div>
           <Card title="Phishing verification">
-            <p className="text-sm text-slate-600">
+            <Muted>
               Verify reporter submissions from the queue via{" "}
-              <code className="rounded bg-slate-100 px-1">POST /api/phishing/verify</code>{" "}
-              with <code className="rounded bg-slate-100 px-1">{"{ reportId, verdict }"}</code>.
-            </p>
+              <code className="rounded bg-[#F5EFE3] px-1.5 py-0.5 font-mono text-[13px] text-[#27251F]">
+                POST /api/phishing/verify
+              </code>{" "}
+              with{" "}
+              <code className="rounded bg-[#F5EFE3] px-1.5 py-0.5 font-mono text-[13px] text-[#27251F]">
+                {"{ reportId, verdict }"}
+              </code>
+              .
+            </Muted>
           </Card>
         </div>
       </div>

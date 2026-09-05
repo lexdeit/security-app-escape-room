@@ -1,14 +1,11 @@
 @import "@heroui/styles";
 
 /* ------------------------------------------------------------------ */
-/* Acme × McDonald's brand theme (light only — locked for contrast)    */
-/* These unlayered overrides win over the layered HeroUI defaults, so  */
-/* every HeroUI variant (primary buttons, chips, alerts, focus rings)  */
-/* automatically uses the brand palette with checked contrast pairs:   */
-/*   white on McD red ....... ~4.6:1 (semibold UI text)                */
-/*   McD dark on McD yellow . ~12:1                                    */
-/*   McD dark on cream ...... ~15:1                                    */
-/*   warm gray on white ..... ~5.5:1                                   */
+/* Acme brand theme (light only — locked for contrast)                  */
+/* Unlayered overrides win over layered HeroUI defaults: every HeroUI   */
+/* variant (buttons, chips, alerts, focus rings) picks up the palette.  */
+/* Checked pairs: ink/cream ~15:1 · gray/white ~5.5:1 · white/red       */
+/* ~4.6:1 (semibold) · ink/yellow ~12:1                                */
 /* ------------------------------------------------------------------ */
 
 :root {
@@ -17,9 +14,11 @@
   --mcd-red: #da291c;
   --mcd-red-dark: #b5241a;
   --mcd-yellow: #ffc72c;
-  --mcd-yellow-dark: #f5b800;
+  --mcd-yellow-dark: #eab308;
   --mcd-ink: #27251f;
   --mcd-cream: #fff9f0;
+  --mcd-sand: #f5efe3;
+  --mcd-line: #ece2d0;
   --mcd-muted: #6f665c;
 
   --background: var(--mcd-cream);
@@ -27,7 +26,7 @@
 
   --surface: #ffffff;
   --surface-foreground: var(--mcd-ink);
-  --surface-secondary: #fff3e0;
+  --surface-secondary: var(--mcd-sand);
   --surface-secondary-foreground: var(--mcd-ink);
 
   --muted: var(--mcd-muted);
@@ -46,11 +45,75 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Display typeface (Archivo) for brand headings */
+.font-display {
+  font-family: var(--font-display), var(--font-geist-sans), Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--mcd-yellow);
+  color: var(--mcd-ink);
+}
+
+/* Visible, consistent keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--mcd-red);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Subtle entrance for page content */
+@keyframes acme-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-enter {
+  animation: acme-enter 0.45s cubic-bezier(0.22, 0.68, 0, 1) both;
+}
+
+.animate-enter-1 {
+  animation: acme-enter 0.45s cubic-bezier(0.22, 0.68, 0, 1) 0.06s both;
+}
+
+.animate-enter-2 {
+  animation: acme-enter 0.45s cubic-bezier(0.22, 0.68, 0, 1) 0.12s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-enter,
+  .animate-enter-1,
+  .animate-enter-2 {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Warm dotted texture for hero bands */
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
 }

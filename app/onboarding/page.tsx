@@ -1,5 +1,6 @@
 import { Card } from "@heroui/react";
 import { OnboardingCtas } from "@/components/OnboardingCtas";
+import { BrandMark, Eyebrow, Steps } from "@/components/ui";
 import { DOCUMENTS } from "@/lib/data";
 
 /**
@@ -11,42 +12,72 @@ export default function OnboardingPage() {
   const guide = DOCUMENTS.find((d) => d.id === "it-onboarding");
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-100">
-      <header className="border-b border-slate-200 bg-white px-8 py-4">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
-          Acme Corporation
-        </p>
-        <p className="font-bold text-slate-900">New hire onboarding</p>
+    <div className="flex min-h-screen flex-col bg-[#FFF9F0]">
+      <div className="h-2 bg-[#FFC72C]" />
+      <header className="bg-[#27251F]">
+        <div className="mx-auto flex w-full max-w-4xl items-center gap-3 px-4 py-5 sm:px-6">
+          <BrandMark className="h-10 w-10" />
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFC72C]">
+              Acme Corporation
+            </p>
+            <p className="font-display text-lg font-extrabold text-white">
+              New hire onboarding
+            </p>
+          </div>
+        </div>
       </header>
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 px-4 py-8">
-        <Card>
+      <main className="animate-enter mx-auto w-full max-w-4xl flex-1 space-y-5 px-4 py-8 sm:px-6 md:py-10">
+        <div>
+          <Eyebrow>Start here</Eyebrow>
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-[#27251F] md:text-4xl">
+            Welcome to Acme. Let&apos;s get you set up.
+          </h1>
+          <p className="mt-2 max-w-2xl text-[15px] text-[#6F665C]">
+            Three steps stand between you and your first day inside the portal.
+          </p>
+        </div>
+        <Card className="rounded-2xl">
+          <Card.Content className="p-5 md:p-6">
+            <Steps
+              steps={[
+                {
+                  label: "Read the IT guide below",
+                  hint: "It contains your temporary starter account.",
+                  state: "now",
+                },
+                {
+                  label: "Sign in to the portal",
+                  hint: "Use the Employee Login button when ready.",
+                  state: "todo",
+                },
+                {
+                  label: "Explore and say hi",
+                  hint: "Complete your profile and browse the directory.",
+                  state: "todo",
+                },
+              ]}
+            />
+          </Card.Content>
+        </Card>
+        <Card className="rounded-2xl">
           <Card.Header>
-            <Card.Title>{guide?.title ?? "IT Onboarding Guide"}</Card.Title>
+            <Card.Title className="font-display text-xl font-bold text-[#27251F]">
+              {guide?.title ?? "IT Onboarding Guide"}
+            </Card.Title>
           </Card.Header>
           <Card.Content>
-            <p className="mb-3 text-sm text-slate-500">
+            <p className="mb-3 text-sm text-[#6F665C]">
               {guide?.summary} Last updated {guide?.updated}.
             </p>
-            <pre className="whitespace-pre-wrap rounded bg-slate-50 p-4 text-sm text-slate-700">
+            <pre className="whitespace-pre-wrap rounded-xl bg-[#FFF3D6] p-4 text-sm leading-relaxed text-[#27251F] ring-1 ring-[#ECE2D0]">
               {guide?.body}
             </pre>
             <OnboardingCtas />
           </Card.Content>
         </Card>
-        <Card>
-          <Card.Header>
-            <Card.Title>What&apos;s next?</Card.Title>
-          </Card.Header>
-          <Card.Content>
-            <p className="text-sm text-slate-600">
-              After your first login, explore the dashboard, complete your
-              profile and browse the employee directory. If anything looks
-              odd, file a ticket — Security Operations reads every report.
-            </p>
-          </Card.Content>
-        </Card>
       </main>
-      <footer className="px-8 py-4 text-center text-xs text-slate-500">
+      <footer className="px-8 py-4 text-center text-xs text-[#6F665C]">
         © 2026 Acme Corporation · Internal use only
       </footer>
     </div>

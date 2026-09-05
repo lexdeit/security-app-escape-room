@@ -1,7 +1,7 @@
 ﻿import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell, Card } from "@/components/AppShell";
-import { PageHeader, SearchBar } from "@/components/ui";
+import { EmptyState, PageHeader, SearchBar, UserAvatar } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
 import { EMPLOYEES } from "@/lib/data";
 
@@ -26,33 +26,46 @@ export default async function EmployeesPage({
 
   return (
     <AppShell user={session} active="/employees">
-      <PageHeader title="Employees" subtitle="Directory of Acme Corporation staff." />
+      <PageHeader
+        eyebrow="People"
+        title="Employees"
+        subtitle="Directory of Acme Corporation staff across every office."
+      />
       <SearchBar
         defaultValue={q ?? ""}
         placeholder="Search by name, title or department…"
       />
       <Card>
-        <ul className="divide-y divide-slate-100">
-          {list.map((e) => (
-            <li key={e.id} className="flex items-center justify-between py-3">
-              <div>
+        {list.length === 0 ? (
+          <EmptyState
+            title="No people found"
+            hint="Try a different name, title or department."
+          />
+        ) : (
+          <ul className="divide-y divide-[#F3EBDD]">
+            {list.map((e) => (
+              <li key={e.id}>
                 <Link
                   href={`/profile?id=${e.id}`}
-                  className="font-medium text-sky-700 hover:underline"
+                  className="group flex items-center gap-4 rounded-xl px-2 py-3.5 transition-colors hover:bg-[#FFF9F0]"
                 >
-                  {e.name}
+                  <UserAvatar name={e.name} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[15px] font-semibold text-[#27251F] group-hover:text-[#B5241A]">
+                      {e.name}
+                    </span>
+                    <span className="mt-0.5 block truncate text-sm text-[#6F665C]">
+                      {e.title} · {e.department}
+                    </span>
+                  </span>
+                  <span className="hidden shrink-0 text-xs text-[#6F665C] sm:block">
+                    {e.office}
+                  </span>
                 </Link>
-                <p className="text-sm text-slate-500">
-                  {e.title} Â· {e.department}
-                </p>
-              </div>
-              <span className="text-xs text-slate-400">{e.office}</span>
-            </li>
-          ))}
-        </ul>
-        {list.length === 0 ? (
-          <p className="py-4 text-sm text-slate-500">No matches found.</p>
-        ) : null}
+              </li>
+            ))}
+          </ul>
+        )}
       </Card>
     </AppShell>
   );
