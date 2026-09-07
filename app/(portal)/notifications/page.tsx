@@ -1,18 +1,17 @@
-﻿import Link from "next/link";
-import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
-import { PageHeader } from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+import Link from "next/link";
+import { Card } from "@/components/ui-server";
+import { PageHeader } from "@/components/ui-server";
+import { requireUser } from "@/lib/portal";
 import { NOTIFICATIONS } from "@/lib/data";
+export const metadata = { title: "Notifications" };
 
 export default async function NotificationsPage() {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  await requireUser();
 
   const unread = NOTIFICATIONS.filter((n) => n.unread).length;
 
   return (
-    <AppShell user={session} active="/notifications">
+    <>
       <PageHeader
         eyebrow="Updates"
         title="Notifications"
@@ -54,6 +53,6 @@ export default async function NotificationsPage() {
           ))}
         </ol>
       </Card>
-    </AppShell>
+    </>
   );
 }

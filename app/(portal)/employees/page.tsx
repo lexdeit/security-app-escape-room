@@ -1,17 +1,17 @@
-﻿import Link from "next/link";
-import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
-import { EmptyState, PageHeader, SearchBar, UserAvatar } from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+import Link from "next/link";
+import { Card } from "@/components/ui-server";
+import { EmptyState, PageHeader } from "@/components/ui-server";
+import { SearchBar, UserAvatar } from "@/components/ui";
+import { requireUser } from "@/lib/portal";
 import { EMPLOYEES } from "@/lib/data";
+export const metadata = { title: "Employees" };
 
 export default async function EmployeesPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  await requireUser();
   const { q } = await searchParams;
   const query = (q ?? "").trim().toLowerCase();
 
@@ -25,7 +25,7 @@ export default async function EmployeesPage({
     : EMPLOYEES;
 
   return (
-    <AppShell user={session} active="/employees">
+    <>
       <PageHeader
         eyebrow="People"
         title="Employees"
@@ -67,6 +67,6 @@ export default async function EmployeesPage({
           </ul>
         )}
       </Card>
-    </AppShell>
+    </>
   );
 }

@@ -1,8 +1,8 @@
-﻿import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
+import { Card } from "@/components/ui-server";
 import { WebhookTester } from "@/components/WebhookTester";
-import { IconBell, IconClock, IconGear, IconTicket, Muted, PageHeader } from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+import { IconBell, IconClock, IconGear, IconTicket, Muted, PageHeader } from "@/components/ui-server";
+import { requireUser } from "@/lib/portal";
+export const metadata = { title: "Settings" };
 
 const PREFS = [
   { icon: IconBell, label: "Weekly digest email", value: "On", on: true },
@@ -11,11 +11,10 @@ const PREFS = [
 ];
 
 export default async function SettingsPage() {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  await requireUser();
 
   return (
-    <AppShell user={session} active="/settings">
+    <>
       <PageHeader
         eyebrow="Workspace"
         title="Settings"
@@ -61,6 +60,6 @@ export default async function SettingsPage() {
           </div>
         </Card>
       </div>
-    </AppShell>
+    </>
   );
 }

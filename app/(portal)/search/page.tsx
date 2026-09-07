@@ -1,20 +1,19 @@
-﻿import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
-import { PageHeader, SearchBar } from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+import { Card, Muted, PageHeader } from "@/components/ui-server";
+import { SearchBar } from "@/components/ui";
+import { requireUser } from "@/lib/portal";
 import { DOCUMENTS, EMPLOYEES, searchTickets } from "@/lib/data";
+export const metadata = { title: "Search" };
 
 export default async function SearchPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  const user = await requireUser();
   const { q } = await searchParams;
   const query = (q ?? "").trim();
 
-  const elevated = session.role === "admin" || session.role === "analyst";
+  const elevated = user.role === "admin" || user.role === "analyst";
   const employees = query
     ? EMPLOYEES.filter((e) =>
         `${e.name} ${e.title} ${e.department}`.toLowerCase().includes(query.toLowerCase()),
@@ -30,7 +29,7 @@ export default async function SearchPage({
   const tickets = query ? searchTickets(query).slice(0, 5) : [];
 
   return (
-    <AppShell user={session} active="/search">
+    <>
       <PageHeader eyebrow="Find" title="Search" subtitle="Search employees, documents and tickets." />
       <SearchBar defaultValue={query} placeholder="Type to search…" />
       {query ? (
@@ -98,12 +97,12 @@ export default async function SearchPage({
         </div>
       ) : (
         <Card title="Tips">
-          <p className="text-sm text-slate-600">
+          <Muted>
             The ticket index understands advanced operators used by the support
             team. Try filtering by tag, id or status words.
-          </p>
+          </Muted>
         </Card>
       )}
-    </AppShell>
+    </>
   );
 }

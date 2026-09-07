@@ -1,11 +1,13 @@
-﻿import { headers } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { AppShell, Card, Denied } from "@/components/AppShell";
-import { MonoBox, Muted, PageHeader, PriorityChip, StatusChip, TagChip } from "@/components/ui";
+import { Card, Denied } from "@/components/ui-server";
+import { MonoBox, Muted, PageHeader } from "@/components/ui-server";
+import { PriorityChip, StatusChip, TagChip } from "@/components/ui";
 import { currentSession } from "@/lib/portal";
 import { ssoSessionFromHeaders } from "@/lib/auth";
 import { TICKETS } from "@/lib/data";
 import { VAULT_PART_2 } from "@/lib/secrets";
+export const metadata = { title: "Analytics workspace" };
 
 /**
  * Analytics workspace. Deliberately NOT linked from the sidebar: SOC staff
@@ -15,31 +17,27 @@ export default async function AnalystPage() {
   const session = await currentSession();
 
   // SOC staff may arrive with their corporate SSO session instead.
+  // The layout already guarantees legacy-or-SSO authentication; the role
+  // check below decides what this workspace reveals.
   let role = session?.role;
-  let displayName = session?.name ?? "Analyst";
-  let displayEmail = session?.email ?? "";
   if (!session) {
     const sso = await ssoSessionFromHeaders(await headers());
     if (!sso) redirect("/login");
     role = sso.role;
-    displayName = sso.name;
-    displayEmail = sso.email;
   } else if (role !== "analyst" && role !== "admin") {
     const sso = await ssoSessionFromHeaders(await headers());
     if (sso && (sso.role === "analyst" || sso.role === "admin")) {
       role = sso.role;
-      displayName = sso.name;
-      displayEmail = sso.email;
     }
   }
 
   if (role !== "analyst" && role !== "admin") {
     if (!session) redirect("/login");
     return (
-      <AppShell user={session} active="/analyst">
+      <>
         <PageHeader eyebrow="Security" title="Analytics workspace" />
         <Denied what="This workspace is reserved for Security Operations analysts." />
-      </AppShell>
+      </>
     );
   }
 
@@ -47,15 +45,8 @@ export default async function AnalystPage() {
     (t) => t.tag === "phishing" || t.tag === "compliance" || t.tag === "access",
   );
 
-  const shellUser = session ?? {
-    sub: displayEmail,
-    email: displayEmail,
-    name: displayName,
-    role: role as "analyst" | "admin",
-  };
-
   return (
-    <AppShell user={shellUser} active="/analyst">
+    <>
       <PageHeader eyebrow="Security" title="Analytics workspace" subtitle="Security Operations · triage queue and custodian records." />
       <div className="grid items-start gap-5 lg:grid-cols-2">
         <Card title={`Triage queue · ${queue.length}`}>
@@ -113,6 +104,6 @@ export default async function AnalystPage() {
           </Card>
         </div>
       </div>
-    </AppShell>
+    </>
   );
 }

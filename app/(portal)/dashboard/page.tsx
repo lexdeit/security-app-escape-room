@@ -1,31 +1,23 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
+import { Card } from "@/components/ui-server";
 import { DashboardWidgets } from "@/components/DashboardWidgets";
-import {
-  IconArrow,
-  IconClock,
-  IconTicket,
-  PageHeader,
-  PrimaryButton,
-  StatusChip,
-  TagChip,
-} from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+import { IconArrow, IconClock, IconTicket, PageHeader } from "@/components/ui-server";
+import { PrimaryButton, StatusChip, TagChip } from "@/components/ui";
+import { requireUser } from "@/lib/portal";
 import { NOTIFICATIONS, TICKETS } from "@/lib/data";
+export const metadata = { title: "Dashboard" };
 
 export default async function DashboardPage() {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  const user = await requireUser();
 
   const openTickets = TICKETS.filter((t) => t.status !== "closed" && !t.restricted);
   const notes = NOTIFICATIONS.slice(0, 3);
 
   return (
-    <AppShell user={session} active="/dashboard">
+    <>
       <PageHeader
         eyebrow="Overview"
-        title={`Good day, ${session.name.split(" ")[0]}.`}
+        title={`Good day, ${user.name.split(" ")[0]}.`}
         subtitle="Here is what is happening at Acme today."
         actions={
           <Link href="/tickets">
@@ -131,6 +123,6 @@ export default async function DashboardPage() {
           </Link>
         </Card>
       </div>
-    </AppShell>
+    </>
   );
 }

@@ -1,20 +1,19 @@
-﻿import { redirect } from "next/navigation";
 import { Tooltip } from "@heroui/react";
-import { AppShell, Card } from "@/components/AppShell";
-import { IconLock, Muted, PageHeader, Steps } from "@/components/ui";
+import { Card } from "@/components/ui-server";
+import { IconLock, Muted, PageHeader, Steps } from "@/components/ui-server";
 import { VaultForm } from "@/components/VaultForm";
-import { currentSession } from "@/lib/portal";
+import { requireUser } from "@/lib/portal";
+export const metadata = { title: "Compliance Vault" };
 
 /**
  * Compliance Vault. Visible to every employee (procedure VAULT-2026-04 is
  * public knowledge), but disclosure requires two-custodian authorization.
  */
 export default async function VaultPage() {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  await requireUser();
 
   return (
-    <AppShell user={session} active="/vault">
+    <>
       <PageHeader
         eyebrow="Compliance"
         title="Compliance Vault"
@@ -79,6 +78,6 @@ export default async function VaultPage() {
           </div>
         </div>
       </div>
-    </AppShell>
+    </>
   );
 }

@@ -1,21 +1,20 @@
-﻿import { redirect } from "next/navigation";
 import { Card as HeroCard } from "@heroui/react";
-import { AppShell, Card, Denied } from "@/components/AppShell";
-import { IconShield, IconUsers, Muted, PageHeader } from "@/components/ui";
+import { Card, Denied } from "@/components/ui-server";
+import { IconShield, IconUsers, Muted, PageHeader } from "@/components/ui-server";
 import { AccountsTable } from "@/components/AccountsTable";
-import { currentSession } from "@/lib/portal";
+import { requireUser } from "@/lib/portal";
 import { PORTAL_USERS } from "@/lib/users";
+export const metadata = { title: "Administration" };
 
 export default async function AdminPage() {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  const user = await requireUser();
 
-  if (session.role !== "admin") {
+  if (user.role !== "admin") {
     return (
-      <AppShell user={session} active="/admin">
+      <>
         <PageHeader eyebrow="System" title="Administration" />
         <Denied what="The administration console is restricted to IT administrators." />
-      </AppShell>
+      </>
     );
   }
 
@@ -23,7 +22,7 @@ export default async function AdminPage() {
   const analysts = PORTAL_USERS.filter((u) => u.role === "analyst").length;
 
   return (
-    <AppShell user={session} active="/admin">
+    <>
       <PageHeader
         eyebrow="System"
         title="Administration"
@@ -67,6 +66,6 @@ export default async function AdminPage() {
           </Muted>
         </Card>
       </div>
-    </AppShell>
+    </>
   );
 }

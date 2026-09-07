@@ -14,7 +14,10 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Acme Employee Portal",
+  title: {
+    default: "Acme Employee Portal",
+    template: "%s · Acme Employee Portal",
+  },
   description: "Internal employee portal of Acme Corporation.",
 };
 

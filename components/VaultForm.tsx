@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Alert } from "@heroui/react";
-import { ErrorNote, Field, MonoBox, PrimaryButton } from "@/components/ui";
+import { ErrorNote, Field, PrimaryButton } from "@/components/ui";
+import { MonoBox } from "@/components/ui-server";
 
 export function VaultForm() {
   const [part1, setPart1] = useState("");

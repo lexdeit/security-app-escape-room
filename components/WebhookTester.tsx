@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Field, MonoBox, SecondaryButton } from "@/components/ui";
+import { Field, SecondaryButton } from "@/components/ui";
+import { MonoBox } from "@/components/ui-server";
 
 export function WebhookTester() {
   const [url, setUrl] = useState("");

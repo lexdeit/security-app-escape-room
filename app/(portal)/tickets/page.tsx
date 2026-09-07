@@ -1,28 +1,24 @@
-﻿import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
+import { Card } from "@/components/ui-server";
 import { CommentForm } from "@/components/TicketForms";
 import { NewTicketModal } from "@/components/NewTicketModal";
+import { EmptyState, IconClock, Muted, PageHeader } from "@/components/ui-server";
 import {
-  EmptyState,
-  IconClock,
-  Muted,
-  PageHeader,
   PriorityChip,
   SearchBar,
   StatusChip,
   TagChip,
   UserAvatar,
 } from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+import { requireUser } from "@/lib/portal";
 import { getTicket, searchTickets } from "@/lib/data";
+export const metadata = { title: "Tickets" };
 
 export default async function TicketsPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string; id?: string }>;
 }) {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  await requireUser();
   const { q, id } = await searchParams;
 
   const query = (q ?? "").trim();
@@ -33,7 +29,7 @@ export default async function TicketsPage({
   const visibleList = results;
 
   return (
-    <AppShell user={session} active="/tickets">
+    <>
       <PageHeader
         eyebrow="Support"
         title="Tickets"
@@ -134,6 +130,6 @@ export default async function TicketsPage({
           )}
         </Card>
       </div>
-    </AppShell>
+    </>
   );
 }

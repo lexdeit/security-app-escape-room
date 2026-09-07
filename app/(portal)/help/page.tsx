@@ -1,8 +1,7 @@
-﻿import { redirect } from "next/navigation";
 import { Accordion } from "@heroui/react";
-import { AppShell, Card } from "@/components/AppShell";
-import { PageHeader } from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+import { Card, PageHeader } from "@/components/ui-server";
+import { requireUser } from "@/lib/portal";
+export const metadata = { title: "Help" };
 
 const FAQS = [
   {
@@ -24,11 +23,10 @@ const FAQS = [
 ];
 
 export default async function HelpPage() {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  await requireUser();
 
   return (
-    <AppShell user={session} active="/help">
+    <>
       <PageHeader
         eyebrow="Support"
         title="Help"
@@ -52,6 +50,6 @@ export default async function HelpPage() {
           ))}
         </Accordion>
       </Card>
-    </AppShell>
+    </>
   );
 }

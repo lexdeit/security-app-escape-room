@@ -1,6 +1,7 @@
 "use client";
 
-import { BrandModal, PrimaryButton, IconPlus } from "@/components/ui";
+import { BrandModal, PrimaryButton } from "@/components/ui";
+import { IconPlus } from "@/components/ui-server";
 import { NewTicketForm } from "@/components/TicketForms";
 
 export function NewTicketModal() {

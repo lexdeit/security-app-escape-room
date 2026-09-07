@@ -1,5 +1,4 @@
-﻿import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
+import { Card } from "@/components/ui-server";
 import { UrlPreviewForm } from "@/components/UrlPreviewForm";
 import {
   IconEye,
@@ -7,26 +6,26 @@ import {
   IconLock,
   Muted,
   PageHeader,
-} from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+} from "@/components/ui-server";
+import { requireUser } from "@/lib/portal";
 import { DOCUMENTS } from "@/lib/data";
+export const metadata = { title: "Documents" };
 
 export default async function DocumentsPage({
   searchParams,
 }: {
   searchParams: Promise<{ id?: string }>;
 }) {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  const user = await requireUser();
   const { id } = await searchParams;
 
-  const elevated = session.role === "admin" || session.role === "analyst";
+  const elevated = user.role === "admin" || user.role === "analyst";
   const visible = DOCUMENTS.filter((d) => !d.restricted || elevated);
   const opened = id ? DOCUMENTS.find((d) => d.id === id) : undefined;
   const blocked = opened?.restricted && !elevated;
 
   return (
-    <AppShell user={session} active="/documents">
+    <>
       <PageHeader
         eyebrow="Library"
         title="Documents"
@@ -117,6 +116,6 @@ export default async function DocumentsPage({
           </Card>
         </div>
       </div>
-    </AppShell>
+    </>
   );
 }

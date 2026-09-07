@@ -41,14 +41,17 @@ valores por defecto.
 
 ## Estructura
 
-- `app/` — páginas del portal (`dashboard`, `profile`, `employees`, `documents`,
-  `reports`, `tickets`, `notifications`, `search`, `settings`, `admin`,
-  `analyst`, `vault`, `help`, `login`, `onboarding` — esta última pública, sin
-  sesión) y rutas API bajo `app/api/`.
+- `app/` — páginas públicas (`login`, `onboarding`) y grupo de rutas
+  `app/(portal)/` (dashboard, profile, employees, documents, reports,
+  tickets, notifications, search, settings, admin, analyst, vault, help)
+  con layout compartido que resuelve la sesión una vez por request
+  (`React.cache()`), `loading.tsx`/`error.tsx` del portal y `not-found.tsx`
+  global; rutas API bajo `app/api/`.
 - `components/` — layout empresarial, formularios y primitivas de marca
-  reutilizables (`ui.tsx`: botones, campos, chips, alertas, encabezados con la
-  paleta de la empresa y contraste verificado) sobre
-  [@heroui/react](https://heroui.com).
+  reutilizables: `ui-server.tsx` (estáticas, cero JS) y `ui.tsx` (islas
+  interactivas) sobre [@heroui/react](https://heroui.com);
+  `portal-shell.tsx` (Server Component) + `portal-nav.tsx` (islas de
+  navegación con `usePathname`).
 - `lib/` — autenticación (`auth.ts`, con Better Auth + sesión del portal),
   datos ficticios (`data.ts`, `users.ts`), configuración solo-servidor
   (`secrets.ts`) y utilidades de fetching (`ssrf.ts`).

@@ -1,17 +1,17 @@
-﻿import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
-import { IconChart, Muted, PageHeader, TabStrip } from "@/components/ui";
-import { currentSession } from "@/lib/portal";
+import { Card } from "@/components/ui-server";
+import { IconChart, Muted, PageHeader } from "@/components/ui-server";
+import { TabStrip } from "@/components/ui";
+import { requireUser } from "@/lib/portal";
 import { REPORTS } from "@/lib/data";
+export const metadata = { title: "Reports" };
 
 export default async function ReportsPage() {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  await requireUser();
 
   const maxAll = Math.max(...REPORTS.flatMap((r) => r.figures.map((f) => f.value)));
 
   return (
-    <AppShell user={session} active="/reports">
+    <>
       <PageHeader
         eyebrow="Insights"
         title="Reports"
@@ -59,6 +59,6 @@ export default async function ReportsPage() {
         />
         <Muted>Figures are illustrative Q3 snapshots from Finance.</Muted>
       </Card>
-    </AppShell>
+    </>
   );
 }

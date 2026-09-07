@@ -1,44 +1,43 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { AppShell, Card } from "@/components/AppShell";
+import { Card } from "@/components/ui-server";
 import {
   EmptyState,
   IconArrow,
   KV,
   Muted,
   PageHeader,
-  UserAvatar,
-} from "@/components/ui";
+} from "@/components/ui-server";
+import { UserAvatar } from "@/components/ui";
 import { ProfileEditor } from "@/components/ProfileEditor";
-import { currentSession } from "@/lib/portal";
+import { requireUser } from "@/lib/portal";
 import { EMPLOYEES, getBio } from "@/lib/data";
 import { PORTAL_USERS } from "@/lib/users";
+export const metadata = { title: "My Profile" };
 
 export default async function ProfilePage({
   searchParams,
 }: {
   searchParams: Promise<{ id?: string }>;
 }) {
-  const session = await currentSession();
-  if (!session) redirect("/login");
+  const user = await requireUser();
   const params = await searchParams;
 
   // Employee file lookup shares the directory backend: any logged-in
   // employee can pull up anyone's file by id.
   const viewed: (typeof EMPLOYEES)[number] | undefined = params.id
     ? EMPLOYEES.find((e) => e.id === Number(params.id))
-    : EMPLOYEES.find((e) => e.email.toLowerCase() === session.email.toLowerCase());
+    : EMPLOYEES.find((e) => e.email.toLowerCase() === user.email.toLowerCase());
 
   const isSelf =
     !params.id ||
-    viewed?.email.toLowerCase() === session.email.toLowerCase();
+    viewed?.email.toLowerCase() === user.email.toLowerCase();
 
   const stored = PORTAL_USERS.find(
-    (u) => u.email.toLowerCase() === session.email.toLowerCase(),
+    (u) => u.email.toLowerCase() === user.email.toLowerCase(),
   );
 
   return (
-    <AppShell user={session} active="/profile">
+    <>
       <PageHeader
         eyebrow="People"
         title={isSelf ? "My Profile" : "Employee file"}
@@ -107,14 +106,14 @@ export default async function ProfilePage({
           <div className="lg:col-span-2">
             {isSelf ? (
               <Card title="Edit profile">
-                <ProfileEditor
-                  initial={{
-                    name: session.name,
-                    title: stored?.title ?? "",
-                    phone: viewed.phone,
-                    bio: getBio(viewed.email, viewed.bio),
-                  }}
-                />
+              <ProfileEditor
+                initial={{
+                  name: user.name,
+                  title: stored?.title ?? "",
+                  phone: viewed.phone,
+                  bio: getBio(viewed.email, viewed.bio),
+                }}
+              />
               </Card>
             ) : (
               <Card title="About this file">
@@ -127,6 +126,6 @@ export default async function ProfilePage({
           </div>
         </div>
       )}
-    </AppShell>
+    </>
   );
 }
