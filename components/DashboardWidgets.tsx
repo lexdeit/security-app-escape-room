@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@heroui/react";
-import { IconChart, IconTicket, IconUsers } from "@/components/ui-server";
+import { IconChart, IconTicket, IconUsers } from "@/components/icons";
 
 interface AppConfig {
   app: string;

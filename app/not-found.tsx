@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandMark } from "@/components/ui-server";
+import { BrandMark } from "@/components/icons";
 
 /** Branded 404 for unknown routes. Server-rendered, no client JS. */
 export default function NotFound() {

@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui-server";
 import { WebhookTester } from "@/components/WebhookTester";
-import { IconBell, IconClock, IconGear, IconTicket, Muted, PageHeader } from "@/components/ui-server";
+import { Muted, PageHeader } from "@/components/ui-server";
+import { IconBell, IconClock, IconGear, IconTicket } from "@/components/icons";
 import { requireUser } from "@/lib/portal";
 export const metadata = { title: "Settings" };
 

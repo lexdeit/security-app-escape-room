@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Card } from "@/components/ui-server";
 import { DashboardWidgets } from "@/components/DashboardWidgets";
-import { IconArrow, IconClock, IconTicket, PageHeader } from "@/components/ui-server";
+import { PageHeader } from "@/components/ui-server";
+import { IconArrow, IconClock, IconTicket } from "@/components/icons";
 import { PrimaryButton, StatusChip, TagChip } from "@/components/ui";
 import { requireUser } from "@/lib/portal";
 import { NOTIFICATIONS, TICKETS } from "@/lib/data";

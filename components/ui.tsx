@@ -18,7 +18,7 @@ import {
   type InputRootProps,
   type TextAreaRootProps,
 } from "@heroui/react";
-import { IconChevron, IconLogout, IconSearch, IconUser, IconX } from "./ui-server";
+import { IconChevron, IconLogout, IconSearch, IconUser, IconX } from "./icons";
 
 /* Interactive brand primitives (client islands). Static primitives live in
    ./ui-server so Server Components never ship this module's JS for them. */

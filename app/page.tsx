@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { currentSession } from "@/lib/portal";
-import { BrandMark, IconArrow, IconFile, IconShield, IconUsers } from "@/components/ui-server";
+import { BrandMark, IconArrow, IconFile, IconShield, IconUsers } from "@/components/icons";
 
 const FEATURES = [
   {

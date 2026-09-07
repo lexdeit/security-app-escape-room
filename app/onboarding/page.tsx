@@ -1,6 +1,7 @@
 import { Card } from "@heroui/react";
 import { OnboardingCtas } from "@/components/OnboardingCtas";
-import { BrandMark, Eyebrow, Steps } from "@/components/ui-server";
+import { BrandMark } from "@/components/icons";
+import { Eyebrow, Steps } from "@/components/ui-server";
 import { DOCUMENTS } from "@/lib/data";
 export const metadata = { title: "Onboarding" };
 

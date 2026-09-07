@@ -16,7 +16,7 @@ import {
   IconTicket,
   IconUser,
   IconUsers,
-} from "./ui-server";
+} from "./icons";
 
 export interface NavItem {
   href: string;

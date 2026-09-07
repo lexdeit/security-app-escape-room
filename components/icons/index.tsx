@@ -1,0 +1,23 @@
+/** Barrel: every brand icon is imported from here, never from ui modules. */
+export { IconAlert } from "./IconAlert";
+export { IconArrow } from "./IconArrow";
+export { IconBell } from "./IconBell";
+export { IconChart } from "./IconChart";
+export { IconCheck } from "./IconCheck";
+export { IconChevron } from "./IconChevron";
+export { IconClock } from "./IconClock";
+export { IconEye } from "./IconEye";
+export { IconFile } from "./IconFile";
+export { IconGear } from "./IconGear";
+export { IconHelp } from "./IconHelp";
+export { IconHome } from "./IconHome";
+export { IconLock } from "./IconLock";
+export { IconLogout } from "./IconLogout";
+export { IconPlus } from "./IconPlus";
+export { IconSearch } from "./IconSearch";
+export { IconShield } from "./IconShield";
+export { IconTicket } from "./IconTicket";
+export { IconUser } from "./IconUser";
+export { IconUsers } from "./IconUsers";
+export { IconX } from "./IconX";
+export { BrandMark } from "./BrandMark";

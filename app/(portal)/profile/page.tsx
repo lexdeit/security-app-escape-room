@@ -2,11 +2,11 @@ import Link from "next/link";
 import { Card } from "@/components/ui-server";
 import {
   EmptyState,
-  IconArrow,
   KV,
   Muted,
   PageHeader,
 } from "@/components/ui-server";
+import { IconArrow } from "@/components/icons";
 import { UserAvatar } from "@/components/ui";
 import { ProfileEditor } from "@/components/ProfileEditor";
 import { requireUser } from "@/lib/portal";

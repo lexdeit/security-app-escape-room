@@ -1,6 +1,7 @@
 import { Card as HeroCard } from "@heroui/react";
 import { Card, Denied } from "@/components/ui-server";
-import { IconShield, IconUsers, Muted, PageHeader } from "@/components/ui-server";
+import { Muted, PageHeader } from "@/components/ui-server";
+import { IconShield, IconUsers } from "@/components/icons";
 import { AccountsTable } from "@/components/AccountsTable";
 import { requireUser } from "@/lib/portal";
 import { PORTAL_USERS } from "@/lib/users";

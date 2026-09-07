@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { SessionPayload } from "@/lib/auth";
-import { BrandMark } from "./ui-server";
+import { BrandMark } from "./icons";
 import { AccountMenu } from "./AccountMenu";
 import { MobileNav, SideNav } from "./portal-nav";
 

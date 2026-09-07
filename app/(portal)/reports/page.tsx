@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui-server";
-import { IconChart, Muted, PageHeader } from "@/components/ui-server";
+import { Muted, PageHeader } from "@/components/ui-server";
+import { IconChart } from "@/components/icons";
 import { TabStrip } from "@/components/ui";
 import { requireUser } from "@/lib/portal";
 import { REPORTS } from "@/lib/data";

@@ -1,6 +1,7 @@
 import { Tooltip } from "@heroui/react";
 import { Card } from "@/components/ui-server";
-import { IconLock, Muted, PageHeader, Steps } from "@/components/ui-server";
+import { Muted, PageHeader, Steps } from "@/components/ui-server";
+import { IconLock } from "@/components/icons";
 import { VaultForm } from "@/components/VaultForm";
 import { requireUser } from "@/lib/portal";
 export const metadata = { title: "Compliance Vault" };

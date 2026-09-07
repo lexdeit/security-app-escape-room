@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { Card } from "@heroui/react";
 import { currentSession } from "@/lib/portal";
-import { BrandMark } from "@/components/ui-server";
+import { BrandMark } from "@/components/icons";
 import { LoginForm } from "@/components/LoginForm";
 export const metadata = { title: "Employee Login" };
 

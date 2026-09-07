@@ -1,12 +1,7 @@
 import { Card } from "@/components/ui-server";
 import { UrlPreviewForm } from "@/components/UrlPreviewForm";
-import {
-  IconEye,
-  IconFile,
-  IconLock,
-  Muted,
-  PageHeader,
-} from "@/components/ui-server";
+import { Muted, PageHeader } from "@/components/ui-server";
+import { IconEye, IconFile, IconLock } from "@/components/icons";
 import { requireUser } from "@/lib/portal";
 import { DOCUMENTS } from "@/lib/data";
 export const metadata = { title: "Documents" };
